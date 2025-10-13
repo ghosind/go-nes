@@ -31,7 +31,7 @@ func (cpu *CPU) Step() {
 	opcode := cpu.fetch()
 
 	// Decode & Execute
-	if instruction, exists := InstructionMap[opcode]; exists {
+	if instruction, exists := InstructionMap[opcode]; exists && instruction != nil {
 		instruction(cpu)
 	} else {
 		// Handle unknown opcode (for simplicity, we'll just ignore it here)

@@ -20,7 +20,7 @@ func (ps *ProcessorStatus) set(flag ProcessorStatus, value bool) {
 	if value {
 		*ps |= flag
 	} else {
-		*ps &^= flag
+		*ps = *ps & (^flag)
 	}
 }
 
@@ -84,7 +84,7 @@ func (ps ProcessorStatus) getNegative() bool {
 	return ps.get(psFlagNegative)
 }
 
-func (ps ProcessorStatus) setZeroNeg(value uint8) {
+func (ps *ProcessorStatus) setZeroNeg(value uint8) {
 	ps.setZero(value == 0)
 	ps.setNegative(value&0x80 != 0)
 }
