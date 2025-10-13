@@ -27,19 +27,19 @@ var (
 		0xB4: {execute: (*CPU).ldy_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // LDY Zero Page, X
 		0xAC: {execute: (*CPU).ldy_abs, addressing: addressingModeAbsolute, cycles: 4},          // LDY Absolute
 		0xBC: {execute: (*CPU).ldy_abs_x, addressing: addressingModeAbsoluteX, cycles: 4},       // LDY Absolute, X
-		0x85: {},                                                                                // STA Zero Page
-		0x95: {},                                                                                // STA Zero Page, X
-		0x8D: {},                                                                                // STA Absolute
-		0x9D: {},                                                                                // STA Absolute, X
-		0x99: {},                                                                                // STA Absolute, Y
-		0x81: {},                                                                                // STA (Indirect, X)
-		0x91: {},                                                                                // STA (Indirect), Y
-		0x86: {},                                                                                // STX Zero Page
-		0x96: {},                                                                                // STX Zero Page, Y
-		0x8E: {},                                                                                // STX Absolute
-		0x84: {},                                                                                // STY Zero Page
-		0x94: {},                                                                                // STY Zero Page, X
-		0x8C: {},                                                                                // STY Absolute
+		0x85: {execute: (*CPU).sta_zp, addressing: addressingModeZeroPage, cycles: 3},           // STA Zero Page
+		0x95: {execute: (*CPU).sta_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // STA Zero Page, X
+		0x8D: {execute: (*CPU).sta_abs, addressing: addressingModeAbsolute, cycles: 4},          // STA Absolute
+		0x9D: {execute: (*CPU).sta_abs_x, addressing: addressingModeAbsoluteX, cycles: 5},       // STA Absolute, X
+		0x99: {execute: (*CPU).sta_abs_y, addressing: addressingModeAbsoluteY, cycles: 5},       // STA Absolute, Y
+		0x81: {execute: (*CPU).sta_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6}, // STA (Indirect, X)
+		0x91: {execute: (*CPU).sta_ind_y, addressing: addressingModeIndirectIndexed, cycles: 6}, // STA (Indirect), Y
+		0x86: {execute: (*CPU).stx_zp, addressing: addressingModeZeroPage, cycles: 3},           // STX Zero Page
+		0x96: {execute: (*CPU).stx_zp_y, addressing: addressingModeZeroPageY, cycles: 4},        // STX Zero Page, Y
+		0x8E: {execute: (*CPU).stx_abs, addressing: addressingModeAbsolute, cycles: 4},          // STX Absolute
+		0x84: {execute: (*CPU).sty_zp, addressing: addressingModeZeroPage, cycles: 3},           // STY Zero Page
+		0x94: {execute: (*CPU).sty_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // STY Zero Page, X
+		0x8C: {execute: (*CPU).sty_abs, addressing: addressingModeAbsolute, cycles: 4},          // STY Absolute
 
 		// Register Transfers
 		0xAA: {}, // TAX - Transfer Accumulator to X
@@ -182,151 +182,3 @@ var (
 		0x40: {},                                                                  // RTI - Return from Interrupt
 	}
 )
-
-func (cpu *CPU) clc(operands ...uint8) {
-	cpu.ps.setCarry(false)
-}
-
-func (cpu *CPU) cld(operands ...uint8) {
-	cpu.ps.setDecimal(false)
-}
-
-func (cpu *CPU) cli(operands ...uint8) {
-	cpu.ps.setInterrupt(false)
-}
-
-func (cpu *CPU) clv(operands ...uint8) {
-	cpu.ps.setOverflow(false)
-}
-
-func (cpu *CPU) lda_imm(operands ...uint8) {
-	cpu.a = operands[0]
-	cpu.ps.setZeroNeg(cpu.a)
-}
-
-func (cpu *CPU) lda_zp(operands ...uint8) {
-	addr := operands[0]
-	cpu.a = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.a)
-}
-
-func (cpu *CPU) lda_zp_x(operands ...uint8) {
-	addr := operands[0] + cpu.x
-	cpu.a = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.a)
-}
-
-func (cpu *CPU) lda_abs(operands ...uint8) {
-	low := operands[0]
-	high := operands[1]
-	cpu.a = cpu.mem.ReadAbs(high, low)
-	cpu.ps.setZeroNeg(cpu.a)
-}
-
-func (cpu *CPU) lda_abs_x(operands ...uint8) {
-	low := operands[0]
-	high := operands[1]
-	cpu.a = cpu.mem.ReadAbsShift(high, low, cpu.x)
-	cpu.ps.setZeroNeg(cpu.a)
-}
-
-func (cpu *CPU) lda_abs_y(operands ...uint8) {
-	low := operands[0]
-	high := operands[1]
-	cpu.a = cpu.mem.ReadAbsShift(high, low, cpu.y)
-	cpu.ps.setZeroNeg(cpu.a)
-}
-
-func (cpu *CPU) lda_ind_x(operands ...uint8) {
-	addr := operands[0] + cpu.x
-	low := cpu.mem.ReadZeroPage(addr)
-	high := cpu.mem.ReadZeroPage(addr + 1)
-	cpu.a = cpu.mem.ReadAbs(high, low)
-	cpu.ps.setZeroNeg(cpu.a)
-}
-
-func (cpu *CPU) lda_ind_y(operands ...uint8) {
-	addr := operands[0]
-	low := cpu.mem.ReadZeroPage(addr)
-	high := cpu.mem.ReadZeroPage(addr + 1)
-	cpu.a = cpu.mem.ReadAbsShift(high, low, cpu.y)
-	cpu.ps.setZeroNeg(cpu.a)
-}
-
-func (cpu *CPU) ldx_imm(operands ...uint8) {
-	cpu.x = operands[0]
-	cpu.ps.setZeroNeg(cpu.x)
-}
-
-func (cpu *CPU) ldx_zp(operands ...uint8) {
-	addr := operands[0]
-	cpu.x = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.x)
-}
-
-func (cpu *CPU) ldx_zp_y(operands ...uint8) {
-	addr := operands[0] + cpu.y
-	cpu.x = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.x)
-}
-
-func (cpu *CPU) ldx_abs(operands ...uint8) {
-	low := operands[0]
-	high := operands[1]
-	cpu.x = cpu.mem.ReadAbs(high, low)
-	cpu.ps.setZeroNeg(cpu.x)
-}
-
-func (cpu *CPU) ldx_abs_y(operands ...uint8) {
-	low := operands[0]
-	high := operands[1]
-	cpu.x = cpu.mem.ReadAbsShift(high, low, cpu.y)
-	cpu.ps.setZeroNeg(cpu.x)
-}
-
-func (cpu *CPU) ldy_imm(operands ...uint8) {
-	cpu.y = operands[0]
-	cpu.ps.setZeroNeg(cpu.y)
-}
-
-func (cpu *CPU) ldy_zp(operands ...uint8) {
-	addr := operands[0]
-	cpu.y = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.y)
-}
-
-func (cpu *CPU) ldy_zp_x(operands ...uint8) {
-	addr := operands[0] + cpu.x
-	cpu.y = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.y)
-}
-
-func (cpu *CPU) ldy_abs(operands ...uint8) {
-	low := operands[0]
-	high := operands[1]
-	cpu.y = cpu.mem.ReadAbs(high, low)
-	cpu.ps.setZeroNeg(cpu.y)
-}
-
-func (cpu *CPU) ldy_abs_x(operands ...uint8) {
-	low := operands[0]
-	high := operands[1]
-	cpu.y = cpu.mem.ReadAbsShift(high, low, cpu.x)
-	cpu.ps.setZeroNeg(cpu.y)
-}
-
-func (cpu *CPU) nop(operands ...uint8) {
-	// Do nothing
-}
-
-func (cpu *CPU) sec(operands ...uint8) {
-	cpu.ps.setCarry(true)
-}
-
-func (cpu *CPU) sed(operands ...uint8) {
-	cpu.ps.setDecimal(true)
-}
-
-func (cpu *CPU) sei(operands ...uint8) {
-	cpu.ps.setInterrupt(true)
-}

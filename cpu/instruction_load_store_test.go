@@ -384,3 +384,294 @@ func TestCPU_LDY_ABS_X(t *testing.T) {
 	a.EqualNow(cpu.ps.getNegative(), false)
 	a.EqualNow(cycles, 4)
 }
+
+func TestCPU_STA_ZP(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA9 // LDA Immediate opcode
+	cpu.mem[0x8001] = 0x42 // Operand: Load the value 0x42 into A
+	cpu.mem[0x8002] = 0x85 // STA Zero Page opcode
+	cpu.mem[0x8003] = 0x10 // Operand: Zero Page address 0x10
+	cpu.Reset()
+
+	cpu.Step()           // Execute LDA
+	cycles := cpu.Step() // Execute STA
+
+	a.EqualNow(cpu.mem[0x0010], uint8(0x42))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 3)
+}
+
+func TestCPU_STA_ZP_X(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA9 // LDA Immediate opcode
+	cpu.mem[0x8001] = 0x37 // Operand: Load the value 0x37 into A
+	cpu.mem[0x8002] = 0x95 // STA Zero Page, X opcode
+	cpu.mem[0x8003] = 0x10 // Operand: Zero Page address 0x10
+	cpu.Reset()
+	cpu.x = 0x05 // Set X register to 5
+
+	cpu.Step()           // Execute LDA
+	cycles := cpu.Step() // Execute STA
+
+	a.EqualNow(cpu.mem[0x0015], uint8(0x37))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
+}
+
+func TestCPU_STA_ABS(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA9 // LDA Immediate opcode
+	cpu.mem[0x8001] = 0x99 // Operand: Load the value 0x99 into A
+	cpu.mem[0x8002] = 0x8D // STA Absolute opcode
+	cpu.mem[0x8003] = 0x00 // Low byte of address
+	cpu.mem[0x8004] = 0x20 // High byte of address (0x2000)
+	cpu.Reset()
+
+	cpu.Step()           // Execute LDA
+	cycles := cpu.Step() // Execute STA
+
+	a.EqualNow(cpu.mem[0x2000], uint8(0x99))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), true)
+	a.EqualNow(cycles, 4)
+}
+
+func TestCPU_STA_ABS_X(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA9 // LDA Immediate opcode
+	cpu.mem[0x8001] = 0x55 // Operand: Load the value 0x55 into A
+	cpu.mem[0x8002] = 0x9D // STA Absolute, X opcode
+	cpu.mem[0x8003] = 0x00 // Low byte of address
+	cpu.mem[0x8004] = 0x20 // High byte of address (0x2000)
+	cpu.Reset()
+	cpu.x = 0x05 // Set X register to 5
+
+	cpu.Step()           // Execute LDA
+	cycles := cpu.Step() // Execute STA
+
+	a.EqualNow(cpu.mem[0x2005], uint8(0x55))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 5)
+}
+
+func TestCPU_STA_ABS_Y(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA9 // LDA Immediate opcode
+	cpu.mem[0x8001] = 0x77 // Operand: Load the value 0x77 into A
+	cpu.mem[0x8002] = 0x99 // STA Absolute, Y opcode
+	cpu.mem[0x8003] = 0x00 // Low byte of address
+	cpu.mem[0x8004] = 0x20 // High byte of address (0x2000)
+	cpu.Reset()
+	cpu.y = 0x03 // Set Y register to 3
+
+	cpu.Step()           // Execute LDA
+	cycles := cpu.Step() // Execute STA
+
+	a.EqualNow(cpu.mem[0x2003], uint8(0x77))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 5)
+}
+
+func TestCPU_STA_IND_X(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA9 // LDA Immediate opcode
+	cpu.mem[0x8001] = 0x42 // Operand: Load the value 0x42 into A
+	cpu.mem[0x8002] = 0x81 // STA (Indirect, X) opcode
+	cpu.mem[0x8003] = 0x10 // Operand: Zero Page address 0x10
+	// Set up the indirect address
+	cpu.mem[0x0015] = 0x00 // Low byte of effective address (0x3000)
+	cpu.mem[0x0016] = 0x30 // High byte of effective address
+	cpu.Reset()
+	cpu.x = 0x05 // Set X register to 5
+
+	cpu.Step()           // Execute LDA
+	cycles := cpu.Step() // Execute STA
+
+	a.EqualNow(cpu.mem[0x3000], uint8(0x42))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 6)
+}
+
+func TestCPU_STA_IND_Y(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA9 // LDA Immediate opcode
+	cpu.mem[0x8001] = 0x37 // Operand: Load the value 0x37 into A
+	cpu.mem[0x8002] = 0x91 // STA (Indirect), Y opcode
+	cpu.mem[0x8003] = 0x10 // Operand: Zero Page address 0x10
+	// Set up the indirect address
+	cpu.mem[0x0010] = 0x00 // Low byte of base address (0x3000)
+	cpu.mem[0x0011] = 0x30 // High byte of base address
+	cpu.Reset()
+	cpu.y = 0x02 // Set Y register to 2
+
+	cpu.Step()           // Execute LDA
+	cycles := cpu.Step() // Execute STA
+
+	a.EqualNow(cpu.mem[0x3002], uint8(0x37))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 6)
+}
+
+func TestCPU_STX_ZP(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA2 // LDX Immediate opcode
+	cpu.mem[0x8001] = 0x55 // Operand: Load the value 0x55 into X
+	cpu.mem[0x8002] = 0x86 // STX Zero Page opcode
+	cpu.mem[0x8003] = 0x10 // Operand: Zero Page address 0x10
+	cpu.Reset()
+
+	cpu.Step()           // Execute LDX
+	cycles := cpu.Step() // Execute STX
+
+	a.EqualNow(cpu.mem[0x0010], uint8(0x55))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 3)
+}
+
+func TestCPU_STX_ZP_Y(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA2 // LDX Immediate opcode
+	cpu.mem[0x8001] = 0x33 // Operand: Load the value 0x33 into X
+	cpu.mem[0x8002] = 0x96 // STX Zero Page, Y opcode
+	cpu.mem[0x8003] = 0x10 // Operand: Zero Page address 0x10
+	cpu.Reset()
+	cpu.y = 0x05 // Set Y register to 5
+
+	cpu.Step()           // Execute LDX
+	cycles := cpu.Step() // Execute STX
+
+	a.EqualNow(cpu.mem[0x0015], uint8(0x33))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
+}
+
+func TestCPU_STX_ABS(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA2 // LDX Immediate opcode
+	cpu.mem[0x8001] = 0x77 // Operand: Load the value 0x77 into X
+	cpu.mem[0x8002] = 0x8E // STX Absolute opcode
+	cpu.mem[0x8003] = 0x00 // Low byte of address
+	cpu.mem[0x8004] = 0x20 // High byte of address (0x2000)
+	cpu.Reset()
+
+	cpu.Step()           // Execute LDX
+	cycles := cpu.Step() // Execute STX
+
+	a.EqualNow(cpu.mem[0x2000], uint8(0x77))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
+}
+
+func TestCPU_STY_ZP(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA0 // LDY Immediate opcode
+	cpu.mem[0x8001] = 0x99 // Operand: Load the value 0x99 into Y
+	cpu.mem[0x8002] = 0x84 // STY Zero Page opcode
+	cpu.mem[0x8003] = 0x10 // Operand: Zero Page address 0x10
+	cpu.Reset()
+
+	cpu.Step()           // Execute LDY
+	cycles := cpu.Step() // Execute STY
+
+	a.EqualNow(cpu.mem[0x0010], uint8(0x99))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), true)
+	a.EqualNow(cycles, 3)
+}
+
+func TestCPU_STY_ZP_X(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA0 // LDY Immediate opcode
+	cpu.mem[0x8001] = 0x44 // Operand: Load the value 0x44 into Y
+	cpu.mem[0x8002] = 0x94 // STY Zero Page, X opcode
+	cpu.mem[0x8003] = 0x10 // Operand: Zero Page address 0x10
+	cpu.Reset()
+	cpu.x = 0x05 // Set X register to 5
+
+	cpu.Step()           // Execute LDY
+	cycles := cpu.Step() // Execute STY
+
+	a.EqualNow(cpu.mem[0x0015], uint8(0x44))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
+}
+
+func TestCPU_STY_ABS(t *testing.T) {
+	a := assert.New(t)
+
+	cpu := NewCPU()
+	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
+	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
+	cpu.mem[0x8000] = 0xA0 // LDY Immediate opcode
+	cpu.mem[0x8001] = 0x22 // Operand: Load the value 0x22 into Y
+	cpu.mem[0x8002] = 0x8C // STY Absolute opcode
+	cpu.mem[0x8003] = 0x00 // Low byte of address
+	cpu.mem[0x8004] = 0x20 // High byte of address (0x2000)
+	cpu.Reset()
+
+	cpu.Step()           // Execute LDY
+	cycles := cpu.Step() // Execute STY
+
+	a.EqualNow(cpu.mem[0x2000], uint8(0x22))
+	a.EqualNow(cpu.ps.getZero(), false)
+	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
+}

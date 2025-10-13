@@ -1,0 +1,29 @@
+package cpu
+
+func (cpu *CPU) clc(operands ...uint8) {
+	cpu.ps.setCarry(false)
+}
+
+func (cpu *CPU) cld(operands ...uint8) {
+	cpu.ps.setDecimal(false)
+}
+
+func (cpu *CPU) cli(operands ...uint8) {
+	cpu.ps.setInterrupt(false)
+}
+
+func (cpu *CPU) clv(operands ...uint8) {
+	cpu.ps.setOverflow(false)
+}
+
+func (cpu *CPU) sec(operands ...uint8) {
+	cpu.ps.setCarry(true)
+}
+
+func (cpu *CPU) sed(operands ...uint8) {
+	cpu.ps.setDecimal(true)
+}
+
+func (cpu *CPU) sei(operands ...uint8) {
+	cpu.ps.setInterrupt(true)
+}
