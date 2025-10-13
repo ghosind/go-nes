@@ -26,16 +26,26 @@ func (cpu *CPU) Reset() {
 	*cpu.ps = 0x24 // Set unused flag to 1 and interrupt disable to 1
 }
 
-func (cpu *CPU) Step() {
+func (cpu *CPU) Step() int {
 	// Fetch opcode
 	opcode := cpu.fetch()
 
-	// Decode & Execute
-	if instruction, exists := InstructionMap[opcode]; exists && instruction != nil {
-		instruction(cpu)
-	} else {
+	// Decode
+	instruction, exists := instructionMap[opcode]
+	if !exists || instruction.execute == nil {
 		// Handle unknown opcode (for simplicity, we'll just ignore it here)
+		return 0
 	}
+
+	// Fetch operands
+	operands, addCycles := cpu.fetchOperands(instruction.addressing)
+	// hardcode cycles to simulate the real cpu cycles
+	cycles := instruction.cycles + addCycles
+
+	// Execute instruction
+	instruction.execute(cpu, operands...)
+
+	return cycles
 }
 
 func (cpu *CPU) fetch() uint8 {

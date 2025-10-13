@@ -1,326 +1,332 @@
 package cpu
 
+type cpuInstruction struct {
+	execute    func(*CPU, ...uint8)
+	addressing AddressingMode
+	cycles     int
+}
+
 var (
-	InstructionMap map[uint8]func(*CPU) = map[uint8]func(*CPU){
+	instructionMap map[uint8]cpuInstruction = map[uint8]cpuInstruction{
 		// Load/Store Operations
-		0xA9: (*CPU).lda_imm,   // LDA Immediate
-		0xA5: (*CPU).lda_zp,    // LDA Zero Page
-		0xB5: (*CPU).lda_zp_x,  // LDA Zero Page, X
-		0xAD: (*CPU).lda_abs,   // LDA Absolute
-		0xBD: (*CPU).lda_abs_x, // LDA Absolute, X
-		0xB9: (*CPU).lda_abs_y, // LDA Absolute, Y
-		0xA1: (*CPU).lda_ind_x, // LDA (Indirect, X)
-		0xB1: (*CPU).lda_ind_y, // LDA (Indirect), Y
-		0xA2: (*CPU).ldx_imm,   // LDX Immediate
-		0xA6: (*CPU).ldx_zp,    // LDX Zero Page
-		0xB6: (*CPU).ldx_zp_y,  // LDX Zero Page, Y
-		0xAE: (*CPU).ldx_abs,   // LDX Absolute
-		0xBE: (*CPU).ldx_abs_y, // LDX Absolute, Y
-		0xA0: (*CPU).ldy_imm,   // LDY Immediate
-		0xA4: (*CPU).ldy_zp,    // LDY Zero Page
-		0xB4: (*CPU).ldy_zp_x,  // LDY Zero Page, X
-		0xAC: (*CPU).ldy_abs,   // LDY Absolute
-		0xBC: (*CPU).ldy_abs_x, // LDY Absolute, X
-		0x85: nil,              // STA Zero Page
-		0x95: nil,              // STA Zero Page, X
-		0x8D: nil,              // STA Absolute
-		0x9D: nil,              // STA Absolute, X
-		0x99: nil,              // STA Absolute, Y
-		0x81: nil,              // STA (Indirect, X)
-		0x91: nil,              // STA (Indirect), Y
-		0x86: nil,              // STX Zero Page
-		0x96: nil,              // STX Zero Page, Y
-		0x8E: nil,              // STX Absolute
-		0x84: nil,              // STY Zero Page
-		0x94: nil,              // STY Zero Page, X
-		0x8C: nil,              // STY Absolute
+		0xA9: {execute: (*CPU).lda_imm, addressing: addressingModeImmediate, cycles: 2},         // LDA Immediate
+		0xA5: {execute: (*CPU).lda_zp, addressing: addressingModeZeroPage, cycles: 3},           // LDA Zero Page
+		0xB5: {execute: (*CPU).lda_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // LDA Zero Page, X
+		0xAD: {execute: (*CPU).lda_abs, addressing: addressingModeAbsolute, cycles: 4},          // LDA Absolute
+		0xBD: {execute: (*CPU).lda_abs_x, addressing: addressingModeAbsoluteX, cycles: 4},       // LDA Absolute, X
+		0xB9: {execute: (*CPU).lda_abs_y, addressing: addressingModeAbsoluteY, cycles: 4},       // LDA Absolute, Y
+		0xA1: {execute: (*CPU).lda_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6}, // LDA (Indirect, X)
+		0xB1: {execute: (*CPU).lda_ind_y, addressing: addressingModeIndirectIndexed, cycles: 5}, // LDA (Indirect), Y
+		0xA2: {execute: (*CPU).ldx_imm, addressing: addressingModeImmediate, cycles: 2},         // LDX Immediate
+		0xA6: {execute: (*CPU).ldx_zp, addressing: addressingModeZeroPage, cycles: 3},           // LDX Zero Page
+		0xB6: {execute: (*CPU).ldx_zp_y, addressing: addressingModeZeroPageY, cycles: 4},        // LDX Zero Page, Y
+		0xAE: {execute: (*CPU).ldx_abs, addressing: addressingModeAbsolute, cycles: 4},          // LDX Absolute
+		0xBE: {execute: (*CPU).ldx_abs_y, addressing: addressingModeAbsoluteY, cycles: 4},       // LDX Absolute, Y
+		0xA0: {execute: (*CPU).ldy_imm, addressing: addressingModeImmediate, cycles: 2},         // LDY Immediate
+		0xA4: {execute: (*CPU).ldy_zp, addressing: addressingModeZeroPage, cycles: 3},           // LDY Zero Page
+		0xB4: {execute: (*CPU).ldy_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // LDY Zero Page, X
+		0xAC: {execute: (*CPU).ldy_abs, addressing: addressingModeAbsolute, cycles: 4},          // LDY Absolute
+		0xBC: {execute: (*CPU).ldy_abs_x, addressing: addressingModeAbsoluteX, cycles: 4},       // LDY Absolute, X
+		0x85: {},                                                                                // STA Zero Page
+		0x95: {},                                                                                // STA Zero Page, X
+		0x8D: {},                                                                                // STA Absolute
+		0x9D: {},                                                                                // STA Absolute, X
+		0x99: {},                                                                                // STA Absolute, Y
+		0x81: {},                                                                                // STA (Indirect, X)
+		0x91: {},                                                                                // STA (Indirect), Y
+		0x86: {},                                                                                // STX Zero Page
+		0x96: {},                                                                                // STX Zero Page, Y
+		0x8E: {},                                                                                // STX Absolute
+		0x84: {},                                                                                // STY Zero Page
+		0x94: {},                                                                                // STY Zero Page, X
+		0x8C: {},                                                                                // STY Absolute
 
 		// Register Transfers
-		0xAA: nil, // TAX - Transfer Accumulator to X
-		0xA8: nil, // TAY - Transfer Accumulator to Y
-		0x8A: nil, // TXA - Transfer X to Accumulator
-		0x98: nil, // TYA - Transfer Y to Accumulator
+		0xAA: {}, // TAX - Transfer Accumulator to X
+		0xA8: {}, // TAY - Transfer Accumulator to Y
+		0x8A: {}, // TXA - Transfer X to Accumulator
+		0x98: {}, // TYA - Transfer Y to Accumulator
 
 		// Stack Operations
-		0xBA: nil, // TSX - Transfer Stack Pointer to X
-		0x9A: nil, // TXS - Transfer X to Stack Pointer
-		0x48: nil, // PHA - Push Accumulator onto Stack
-		0x68: nil, // PLA - Pull Accumulator from Stack
-		0x08: nil, // PHP - Push Processor Status onto Stack
-		0x28: nil, // PLP - Pull Processor Status from Stack
+		0xBA: {}, // TSX - Transfer Stack Pointer to X
+		0x9A: {}, // TXS - Transfer X to Stack Pointer
+		0x48: {}, // PHA - Push Accumulator onto Stack
+		0x68: {}, // PLA - Pull Accumulator from Stack
+		0x08: {}, // PHP - Push Processor Status onto Stack
+		0x28: {}, // PLP - Pull Processor Status from Stack
 
 		// Logical Operations
-		0x29: nil, // AND Immediate
-		0x25: nil, // AND Zero Page
-		0x35: nil, // AND Zero Page, X
-		0x2D: nil, // AND Absolute
-		0x3D: nil, // AND Absolute, X
-		0x39: nil, // AND Absolute, Y
-		0x21: nil, // AND (Indirect, X)
-		0x31: nil, // AND (Indirect), Y
-		0x49: nil, // EOR Immediate
-		0x45: nil, // EOR Zero Page
-		0x55: nil, // EOR Zero Page, X
-		0x4D: nil, // EOR Absolute
-		0x5D: nil, // EOR Absolute, X
-		0x59: nil, // EOR Absolute, Y
-		0x41: nil, // EOR (Indirect, X)
-		0x51: nil, // EOR (Indirect), Y
-		0x09: nil, // ORA Immediate
-		0x05: nil, // ORA Zero Page
-		0x15: nil, // ORA Zero Page, X
-		0x0D: nil, // ORA Absolute
-		0x1D: nil, // ORA Absolute, X
-		0x19: nil, // ORA Absolute, Y
-		0x01: nil, // ORA (Indirect, X)
-		0x11: nil, // ORA (Indirect), Y
-		0x24: nil, // BIT Zero Page
-		0x2C: nil, // BIT Absolute
+		0x29: {}, // AND Immediate
+		0x25: {}, // AND Zero Page
+		0x35: {}, // AND Zero Page, X
+		0x2D: {}, // AND Absolute
+		0x3D: {}, // AND Absolute, X
+		0x39: {}, // AND Absolute, Y
+		0x21: {}, // AND (Indirect, X)
+		0x31: {}, // AND (Indirect), Y
+		0x49: {}, // EOR Immediate
+		0x45: {}, // EOR Zero Page
+		0x55: {}, // EOR Zero Page, X
+		0x4D: {}, // EOR Absolute
+		0x5D: {}, // EOR Absolute, X
+		0x59: {}, // EOR Absolute, Y
+		0x41: {}, // EOR (Indirect, X)
+		0x51: {}, // EOR (Indirect), Y
+		0x09: {}, // ORA Immediate
+		0x05: {}, // ORA Zero Page
+		0x15: {}, // ORA Zero Page, X
+		0x0D: {}, // ORA Absolute
+		0x1D: {}, // ORA Absolute, X
+		0x19: {}, // ORA Absolute, Y
+		0x01: {}, // ORA (Indirect, X)
+		0x11: {}, // ORA (Indirect), Y
+		0x24: {}, // BIT Zero Page
+		0x2C: {}, // BIT Absolute
 
 		// Arithmetic
-		0x69: nil, // ADC Immediate
-		0x65: nil, // ADC Zero Page
-		0x75: nil, // ADC Zero Page, X
-		0x6D: nil, // ADC Absolute
-		0x7D: nil, // ADC Absolute, X
-		0x79: nil, // ADC Absolute, Y
-		0x61: nil, // ADC (Indirect, X)
-		0x71: nil, // ADC (Indirect), Y
-		0xE9: nil, // SBC Immediate
-		0xE5: nil, // SBC Zero Page
-		0xF5: nil, // SBC Zero Page, X
-		0xED: nil, // SBC Absolute
-		0xFD: nil, // SBC Absolute, X
-		0xF9: nil, // SBC Absolute, Y
-		0xE1: nil, // SBC (Indirect, X)
-		0xF1: nil, // SBC (Indirect), Y
-		0xC9: nil, // CMP Immediate
-		0xC5: nil, // CMP Zero Page
-		0xD5: nil, // CMP Zero Page, X
-		0xCD: nil, // CMP Absolute
-		0xDD: nil, // CMP Absolute, X
-		0xD9: nil, // CMP Absolute, Y
-		0xC1: nil, // CMP (Indirect, X)
-		0xD1: nil, // CMP (Indirect), Y
-		0xE0: nil, // CPX Immediate
-		0xE4: nil, // CPX Zero Page
-		0xEC: nil, // CPX Absolute
-		0xC0: nil, // CPY Immediate
-		0xC4: nil, // CPY Zero Page
-		0xCC: nil, // CPY Absolute
+		0x69: {}, // ADC Immediate
+		0x65: {}, // ADC Zero Page
+		0x75: {}, // ADC Zero Page, X
+		0x6D: {}, // ADC Absolute
+		0x7D: {}, // ADC Absolute, X
+		0x79: {}, // ADC Absolute, Y
+		0x61: {}, // ADC (Indirect, X)
+		0x71: {}, // ADC (Indirect), Y
+		0xE9: {}, // SBC Immediate
+		0xE5: {}, // SBC Zero Page
+		0xF5: {}, // SBC Zero Page, X
+		0xED: {}, // SBC Absolute
+		0xFD: {}, // SBC Absolute, X
+		0xF9: {}, // SBC Absolute, Y
+		0xE1: {}, // SBC (Indirect, X)
+		0xF1: {}, // SBC (Indirect), Y
+		0xC9: {}, // CMP Immediate
+		0xC5: {}, // CMP Zero Page
+		0xD5: {}, // CMP Zero Page, X
+		0xCD: {}, // CMP Absolute
+		0xDD: {}, // CMP Absolute, X
+		0xD9: {}, // CMP Absolute, Y
+		0xC1: {}, // CMP (Indirect, X)
+		0xD1: {}, // CMP (Indirect), Y
+		0xE0: {}, // CPX Immediate
+		0xE4: {}, // CPX Zero Page
+		0xEC: {}, // CPX Absolute
+		0xC0: {}, // CPY Immediate
+		0xC4: {}, // CPY Zero Page
+		0xCC: {}, // CPY Absolute
 
 		// Increments & Decrements
-		0xE6: nil, // INC Zero Page
-		0xF6: nil, // INC Zero Page, X
-		0xEE: nil, // INC Absolute
-		0xFE: nil, // INC Absolute, X
-		0xE8: nil, // INX - Increment X
-		0xC8: nil, // INY - Increment Y
-		0xC6: nil, // DEC Zero Page
-		0xD6: nil, // DEC Zero Page, X
-		0xCE: nil, // DEC Absolute
-		0xDE: nil, // DEC Absolute, X
-		0xCA: nil, // DEX - Decrement X
-		0x88: nil, // DEY - Decrement Y
+		0xE6: {}, // INC Zero Page
+		0xF6: {}, // INC Zero Page, X
+		0xEE: {}, // INC Absolute
+		0xFE: {}, // INC Absolute, X
+		0xE8: {}, // INX - Increment X
+		0xC8: {}, // INY - Increment Y
+		0xC6: {}, // DEC Zero Page
+		0xD6: {}, // DEC Zero Page, X
+		0xCE: {}, // DEC Absolute
+		0xDE: {}, // DEC Absolute, X
+		0xCA: {}, // DEX - Decrement X
+		0x88: {}, // DEY - Decrement Y
 
 		// Shifts
-		0x0A: nil, // ASL Accumulator
-		0x06: nil, // ASL Zero Page
-		0x16: nil, // ASL Zero Page, X
-		0x0E: nil, // ASL Absolute
-		0x1E: nil, // ASL Absolute, X
-		0x4A: nil, // LSR Accumulator
-		0x46: nil, // LSR Zero Page
-		0x56: nil, // LSR Zero Page, X
-		0x4E: nil, // LSR Absolute
-		0x5E: nil, // LSR Absolute, X
-		0x2A: nil, // ROL Accumulator
-		0x26: nil, // ROL Zero Page
-		0x36: nil, // ROL Zero Page, X
-		0x2E: nil, // ROL Absolute
-		0x3E: nil, // ROL Absolute, X
-		0x6A: nil, // ROR Accumulator
-		0x66: nil, // ROR Zero Page
-		0x76: nil, // ROR Zero Page, X
-		0x6E: nil, // ROR Absolute
-		0x7E: nil, // ROR Absolute, X
+		0x0A: {}, // ASL Accumulator
+		0x06: {}, // ASL Zero Page
+		0x16: {}, // ASL Zero Page, X
+		0x0E: {}, // ASL Absolute
+		0x1E: {}, // ASL Absolute, X
+		0x4A: {}, // LSR Accumulator
+		0x46: {}, // LSR Zero Page
+		0x56: {}, // LSR Zero Page, X
+		0x4E: {}, // LSR Absolute
+		0x5E: {}, // LSR Absolute, X
+		0x2A: {}, // ROL Accumulator
+		0x26: {}, // ROL Zero Page
+		0x36: {}, // ROL Zero Page, X
+		0x2E: {}, // ROL Absolute
+		0x3E: {}, // ROL Absolute, X
+		0x6A: {}, // ROR Accumulator
+		0x66: {}, // ROR Zero Page
+		0x76: {}, // ROR Zero Page, X
+		0x6E: {}, // ROR Absolute
+		0x7E: {}, // ROR Absolute, X
 
 		// Jumps & Calls
-		0x4C: nil, // JMP Absolute
-		0x6C: nil, // JMP Indirect
-		0x20: nil, // JSR - Jump to Subroutine
-		0x60: nil, // RTS - Return from Subroutine
+		0x4C: {}, // JMP Absolute
+		0x6C: {}, // JMP Indirect
+		0x20: {}, // JSR - Jump to Subroutine
+		0x60: {}, // RTS - Return from Subroutine
 
 		// Branches
-		0x90: nil, // BCC - Branch if Carry Clear
-		0xB0: nil, // BCS - Branch if Carry Set
-		0xF0: nil, // BEQ - Branch if Equal
-		0x30: nil, // BMI - Branch if Minus
-		0xD0: nil, // BNE - Branch if Not Equal
-		0x10: nil, // BPL - Branch if Positive
-		0x50: nil, // BVC - Branch if Overflow Clear
-		0x70: nil, // BVS - Branch if Overflow Set
+		0x90: {}, // BCC - Branch if Carry Clear
+		0xB0: {}, // BCS - Branch if Carry Set
+		0xF0: {}, // BEQ - Branch if Equal
+		0x30: {}, // BMI - Branch if Minus
+		0xD0: {}, // BNE - Branch if Not Equal
+		0x10: {}, // BPL - Branch if Positive
+		0x50: {}, // BVC - Branch if Overflow Clear
+		0x70: {}, // BVS - Branch if Overflow Set
 
 		// Status Flag
-		0x18: (*CPU).clc, // CLC - Clear Carry Flag
-		0xD8: (*CPU).cld, // CLD - Clear Decimal Mode
-		0x58: (*CPU).cli, // CLI - Clear Interrupt Disable
-		0xB8: (*CPU).clv, // CLV - Clear Overflow Flag
-		0x38: (*CPU).sec, // SEC - Set Carry Flag
-		0xF8: (*CPU).sed, // SED - Set Decimal Mode
-		0x78: (*CPU).sei, // SEI - Set Interrupt Disable
+		0x18: {execute: (*CPU).clc, addressing: addressingModeImplied, cycles: 2}, // CLC - Clear Carry Flag
+		0xD8: {execute: (*CPU).cld, addressing: addressingModeImplied, cycles: 2}, // CLD - Clear Decimal Mode
+		0x58: {execute: (*CPU).cli, addressing: addressingModeImplied, cycles: 2}, // CLI - Clear Interrupt Disable
+		0xB8: {execute: (*CPU).clv, addressing: addressingModeImplied, cycles: 2}, // CLV - Clear Overflow Flag
+		0x38: {execute: (*CPU).sec, addressing: addressingModeImplied, cycles: 2}, // SEC - Set Carry Flag
+		0xF8: {execute: (*CPU).sed, addressing: addressingModeImplied, cycles: 2}, // SED - Set Decimal Mode
+		0x78: {execute: (*CPU).sei, addressing: addressingModeImplied, cycles: 2}, // SEI - Set Interrupt Disable
 
 		// System Functions
-		0x00: nil,        // BRK - Force Interrupt
-		0xEA: (*CPU).nop, // NOP - No Operation
-		0x40: nil,        // RTI - Return from Interrupt
+		0x00: {},                                                                  // BRK - Force Interrupt
+		0xEA: {execute: (*CPU).nop, addressing: addressingModeImplied, cycles: 2}, // NOP - No Operation
+		0x40: {},                                                                  // RTI - Return from Interrupt
 	}
 )
 
-func (cpu *CPU) clc() {
+func (cpu *CPU) clc(operands ...uint8) {
 	cpu.ps.setCarry(false)
 }
 
-func (cpu *CPU) cld() {
+func (cpu *CPU) cld(operands ...uint8) {
 	cpu.ps.setDecimal(false)
 }
 
-func (cpu *CPU) cli() {
+func (cpu *CPU) cli(operands ...uint8) {
 	cpu.ps.setInterrupt(false)
 }
 
-func (cpu *CPU) clv() {
+func (cpu *CPU) clv(operands ...uint8) {
 	cpu.ps.setOverflow(false)
 }
 
-func (cpu *CPU) lda_imm() {
-	cpu.a = cpu.fetch()
+func (cpu *CPU) lda_imm(operands ...uint8) {
+	cpu.a = operands[0]
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
-func (cpu *CPU) lda_zp() {
-	addr := cpu.fetch()
+func (cpu *CPU) lda_zp(operands ...uint8) {
+	addr := operands[0]
 	cpu.a = cpu.mem.ReadZeroPage(addr)
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
-func (cpu *CPU) lda_zp_x() {
-	addr := cpu.fetch() + cpu.x
+func (cpu *CPU) lda_zp_x(operands ...uint8) {
+	addr := operands[0] + cpu.x
 	cpu.a = cpu.mem.ReadZeroPage(addr)
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
-func (cpu *CPU) lda_abs() {
-	low := cpu.fetch()
-	high := cpu.fetch()
+func (cpu *CPU) lda_abs(operands ...uint8) {
+	low := operands[0]
+	high := operands[1]
 	cpu.a = cpu.mem.ReadAbs(high, low)
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
-func (cpu *CPU) lda_abs_x() {
-	low := cpu.fetch()
-	high := cpu.fetch()
+func (cpu *CPU) lda_abs_x(operands ...uint8) {
+	low := operands[0]
+	high := operands[1]
 	cpu.a = cpu.mem.ReadAbsShift(high, low, cpu.x)
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
-func (cpu *CPU) lda_abs_y() {
-	low := cpu.fetch()
-	high := cpu.fetch()
+func (cpu *CPU) lda_abs_y(operands ...uint8) {
+	low := operands[0]
+	high := operands[1]
 	cpu.a = cpu.mem.ReadAbsShift(high, low, cpu.y)
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
-func (cpu *CPU) lda_ind_x() {
-	addr := cpu.fetch() + cpu.x
+func (cpu *CPU) lda_ind_x(operands ...uint8) {
+	addr := operands[0] + cpu.x
 	low := cpu.mem.ReadZeroPage(addr)
 	high := cpu.mem.ReadZeroPage(addr + 1)
 	cpu.a = cpu.mem.ReadAbs(high, low)
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
-func (cpu *CPU) lda_ind_y() {
-	addr := cpu.fetch()
+func (cpu *CPU) lda_ind_y(operands ...uint8) {
+	addr := operands[0]
 	low := cpu.mem.ReadZeroPage(addr)
 	high := cpu.mem.ReadZeroPage(addr + 1)
 	cpu.a = cpu.mem.ReadAbsShift(high, low, cpu.y)
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
-func (cpu *CPU) ldx_imm() {
-	cpu.x = cpu.fetch()
+func (cpu *CPU) ldx_imm(operands ...uint8) {
+	cpu.x = operands[0]
 	cpu.ps.setZeroNeg(cpu.x)
 }
 
-func (cpu *CPU) ldx_zp() {
-	addr := cpu.fetch()
+func (cpu *CPU) ldx_zp(operands ...uint8) {
+	addr := operands[0]
 	cpu.x = cpu.mem.ReadZeroPage(addr)
 	cpu.ps.setZeroNeg(cpu.x)
 }
 
-func (cpu *CPU) ldx_zp_y() {
-	addr := cpu.fetch() + cpu.y
+func (cpu *CPU) ldx_zp_y(operands ...uint8) {
+	addr := operands[0] + cpu.y
 	cpu.x = cpu.mem.ReadZeroPage(addr)
 	cpu.ps.setZeroNeg(cpu.x)
 }
 
-func (cpu *CPU) ldx_abs() {
-	low := cpu.fetch()
-	high := cpu.fetch()
+func (cpu *CPU) ldx_abs(operands ...uint8) {
+	low := operands[0]
+	high := operands[1]
 	cpu.x = cpu.mem.ReadAbs(high, low)
 	cpu.ps.setZeroNeg(cpu.x)
 }
 
-func (cpu *CPU) ldx_abs_y() {
-	low := cpu.fetch()
-	high := cpu.fetch()
+func (cpu *CPU) ldx_abs_y(operands ...uint8) {
+	low := operands[0]
+	high := operands[1]
 	cpu.x = cpu.mem.ReadAbsShift(high, low, cpu.y)
 	cpu.ps.setZeroNeg(cpu.x)
 }
 
-func (cpu *CPU) ldy_imm() {
-	cpu.y = cpu.fetch()
+func (cpu *CPU) ldy_imm(operands ...uint8) {
+	cpu.y = operands[0]
 	cpu.ps.setZeroNeg(cpu.y)
 }
 
-func (cpu *CPU) ldy_zp() {
-	addr := cpu.fetch()
+func (cpu *CPU) ldy_zp(operands ...uint8) {
+	addr := operands[0]
 	cpu.y = cpu.mem.ReadZeroPage(addr)
 	cpu.ps.setZeroNeg(cpu.y)
 }
 
-func (cpu *CPU) ldy_zp_x() {
-	addr := cpu.fetch() + cpu.x
+func (cpu *CPU) ldy_zp_x(operands ...uint8) {
+	addr := operands[0] + cpu.x
 	cpu.y = cpu.mem.ReadZeroPage(addr)
 	cpu.ps.setZeroNeg(cpu.y)
 }
 
-func (cpu *CPU) ldy_abs() {
-	low := cpu.fetch()
-	high := cpu.fetch()
+func (cpu *CPU) ldy_abs(operands ...uint8) {
+	low := operands[0]
+	high := operands[1]
 	cpu.y = cpu.mem.ReadAbs(high, low)
 	cpu.ps.setZeroNeg(cpu.y)
 }
 
-func (cpu *CPU) ldy_abs_x() {
-	low := cpu.fetch()
-	high := cpu.fetch()
+func (cpu *CPU) ldy_abs_x(operands ...uint8) {
+	low := operands[0]
+	high := operands[1]
 	cpu.y = cpu.mem.ReadAbsShift(high, low, cpu.x)
 	cpu.ps.setZeroNeg(cpu.y)
 }
 
-func (cpu *CPU) nop() {
+func (cpu *CPU) nop(operands ...uint8) {
 	// Do nothing
 }
 
-func (cpu *CPU) sec() {
+func (cpu *CPU) sec(operands ...uint8) {
 	cpu.ps.setCarry(true)
 }
 
-func (cpu *CPU) sed() {
+func (cpu *CPU) sed(operands ...uint8) {
 	cpu.ps.setDecimal(true)
 }
 
-func (cpu *CPU) sei() {
+func (cpu *CPU) sei(operands ...uint8) {
 	cpu.ps.setInterrupt(true)
 }

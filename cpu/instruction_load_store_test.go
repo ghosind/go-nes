@@ -17,11 +17,12 @@ func TestCPU_LDA_IMM(t *testing.T) {
 	cpu.mem[0x8001] = 0x42 // Operand: Load the value 0x42 into A
 	cpu.Reset()
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.a, uint8(0x42))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 2)
 }
 
 func TestCPU_LDA_ZP(t *testing.T) {
@@ -36,11 +37,12 @@ func TestCPU_LDA_ZP(t *testing.T) {
 	cpu.mem[0x0010] = 0x37 // Value at Zero Page address 0x10
 	cpu.Reset()
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.a, uint8(0x37))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 3)
 }
 
 func TestCPU_LDA_ZP_X(t *testing.T) {
@@ -56,11 +58,12 @@ func TestCPU_LDA_ZP_X(t *testing.T) {
 	cpu.Reset()
 	cpu.x = 0x05 // Set X register to 5
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.a, uint8(0x58))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
 }
 
 func TestCPU_LDA_ABS(t *testing.T) {
@@ -76,11 +79,12 @@ func TestCPU_LDA_ABS(t *testing.T) {
 	cpu.mem[0x2000] = 0x7A // Value at address 0x2000
 	cpu.Reset()
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.a, uint8(0x7A))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
 }
 
 func TestCPU_LDA_ABS_X(t *testing.T) {
@@ -97,11 +101,12 @@ func TestCPU_LDA_ABS_X(t *testing.T) {
 	cpu.Reset()
 	cpu.x = 0x05 // Set X register to 5
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.a, uint8(0x9C))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), true)
+	a.EqualNow(cycles, 4)
 }
 
 func TestCPU_LDA_ABS_Y(t *testing.T) {
@@ -118,11 +123,12 @@ func TestCPU_LDA_ABS_Y(t *testing.T) {
 	cpu.Reset()
 	cpu.y = 0x03 // Set Y register to 3
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.a, uint8(0xFF))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), true)
+	a.EqualNow(cycles, 4)
 }
 
 func TestCPU_LDA_IND_X(t *testing.T) {
@@ -141,11 +147,12 @@ func TestCPU_LDA_IND_X(t *testing.T) {
 	cpu.Reset()
 	cpu.x = 0x05 // Set X register to 5
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.a, uint8(0x66))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 6)
 }
 
 func TestCPU_LDA_IND_Y(t *testing.T) {
@@ -164,11 +171,12 @@ func TestCPU_LDA_IND_Y(t *testing.T) {
 	cpu.Reset()
 	cpu.y = 0x02 // Set Y register to 2
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.a, uint8(0xAB))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), true)
+	a.EqualNow(cycles, 5)
 }
 
 func TestCPU_LDX_IMM(t *testing.T) {
@@ -182,11 +190,12 @@ func TestCPU_LDX_IMM(t *testing.T) {
 	cpu.mem[0x8001] = 0x55 // Operand: Load the value 0x55 into X
 	cpu.Reset()
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.x, uint8(0x55))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 2)
 }
 
 func TestCPU_LDX_ZP(t *testing.T) {
@@ -201,11 +210,12 @@ func TestCPU_LDX_ZP(t *testing.T) {
 	cpu.mem[0x0020] = 0x33 // Value at Zero Page address 0x20
 	cpu.Reset()
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.x, uint8(0x33))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 3)
 }
 
 func TestCPU_LDX_ZP_Y(t *testing.T) {
@@ -221,11 +231,12 @@ func TestCPU_LDX_ZP_Y(t *testing.T) {
 	cpu.Reset()
 	cpu.y = 0x05 // Set Y register to 5
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.x, uint8(0x77))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
 }
 
 func TestCPU_LDX_ABS(t *testing.T) {
@@ -241,11 +252,12 @@ func TestCPU_LDX_ABS(t *testing.T) {
 	cpu.mem[0x3000] = 0x88 // Value at address 0x3000
 	cpu.Reset()
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.x, uint8(0x88))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), true)
+	a.EqualNow(cycles, 4)
 }
 
 func TestCPU_LDX_ABS_Y(t *testing.T) {
@@ -262,11 +274,12 @@ func TestCPU_LDX_ABS_Y(t *testing.T) {
 	cpu.Reset()
 	cpu.y = 0x04 // Set Y register to 4
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.x, uint8(0x22))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
 }
 
 func TestCPU_LDY_IMM(t *testing.T) {
@@ -280,11 +293,12 @@ func TestCPU_LDY_IMM(t *testing.T) {
 	cpu.mem[0x8001] = 0x99 // Operand: Load the value 0x99 into Y
 	cpu.Reset()
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.y, uint8(0x99))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), true)
+	a.EqualNow(cycles, 2)
 }
 
 func TestCPU_LDY_ZP(t *testing.T) {
@@ -299,11 +313,12 @@ func TestCPU_LDY_ZP(t *testing.T) {
 	cpu.mem[0x0030] = 0x44 // Value at Zero Page address 0x30
 	cpu.Reset()
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.y, uint8(0x44))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 3)
 }
 
 func TestCPU_LDY_ZP_X(t *testing.T) {
@@ -319,11 +334,12 @@ func TestCPU_LDY_ZP_X(t *testing.T) {
 	cpu.Reset()
 	cpu.x = 0x05 // Set X register to 5
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.y, uint8(0x11))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
 }
 
 func TestCPU_LDY_ABS(t *testing.T) {
@@ -339,11 +355,12 @@ func TestCPU_LDY_ABS(t *testing.T) {
 	cpu.mem[0x4000] = 0xFE // Value at address 0x4000
 	cpu.Reset()
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.y, uint8(0xFE))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), true)
+	a.EqualNow(cycles, 4)
 }
 
 func TestCPU_LDY_ABS_X(t *testing.T) {
@@ -360,9 +377,10 @@ func TestCPU_LDY_ABS_X(t *testing.T) {
 	cpu.Reset()
 	cpu.x = 0x03 // Set X register to 3
 
-	cpu.Step()
+	cycles := cpu.Step()
 
 	a.EqualNow(cpu.y, uint8(0x66))
 	a.EqualNow(cpu.ps.getZero(), false)
 	a.EqualNow(cpu.ps.getNegative(), false)
+	a.EqualNow(cycles, 4)
 }
