@@ -39,18 +39,14 @@ func (cpu *CPU) lda_abs_y(operands ...uint8) {
 }
 
 func (cpu *CPU) lda_ind_x(operands ...uint8) {
-	addr := operands[0] + cpu.x
-	low := cpu.mem.ReadZeroPage(addr)
-	high := cpu.mem.ReadZeroPage(addr + 1)
-	cpu.a = cpu.mem.ReadAbs(high, low)
+	addr := operands[0]
+	cpu.a = cpu.mem.ReadIndexedIndirect(addr, cpu.x)
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
 func (cpu *CPU) lda_ind_y(operands ...uint8) {
 	addr := operands[0]
-	low := cpu.mem.ReadZeroPage(addr)
-	high := cpu.mem.ReadZeroPage(addr + 1)
-	cpu.a = cpu.mem.ReadAbsShift(high, low, cpu.y)
+	cpu.a = cpu.mem.ReadIndirectIndexed(addr, cpu.y)
 	cpu.ps.setZeroNeg(cpu.a)
 }
 
@@ -145,17 +141,13 @@ func (cpu *CPU) sta_abs_y(operands ...uint8) {
 }
 
 func (cpu *CPU) sta_ind_x(operands ...uint8) {
-	addr := operands[0] + cpu.x
-	low := cpu.mem.ReadZeroPage(addr)
-	high := cpu.mem.ReadZeroPage(addr + 1)
-	cpu.mem.WriteAbs(high, low, cpu.a)
+	addr := operands[0]
+	cpu.mem.WriteIndexedIndirect(addr, cpu.x, cpu.a)
 }
 
 func (cpu *CPU) sta_ind_y(operands ...uint8) {
 	addr := operands[0]
-	low := cpu.mem.ReadZeroPage(addr)
-	high := cpu.mem.ReadZeroPage(addr + 1)
-	cpu.mem.WriteAbsShift(high, low, cpu.y, cpu.a)
+	cpu.mem.WriteIndirectIndexed(addr, cpu.y, cpu.a)
 }
 
 func (cpu *CPU) stx_zp(operands ...uint8) {
