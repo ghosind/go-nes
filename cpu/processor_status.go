@@ -11,6 +11,7 @@ const (
 	psFlagZero      ProcessorStatus = 1 << 1 // Zero Flag
 	psFlagInterrupt ProcessorStatus = 1 << 2 // Interrupt Disable
 	psFlagDecimal   ProcessorStatus = 1 << 3 // Decimal Mode (not used in NES)
+	psFlagUnused    ProcessorStatus = 1 << 4 // Unused, always set to 1
 	psFlagBreak     ProcessorStatus = 1 << 4 // Break Command
 	psFlagOverflow  ProcessorStatus = 1 << 6 // Overflow Flag
 	psFlagNegative  ProcessorStatus = 1 << 7 // Negative Flag
@@ -87,4 +88,12 @@ func (ps ProcessorStatus) getNegative() bool {
 func (ps *ProcessorStatus) setZeroNeg(value uint8) {
 	ps.setZero(value == 0)
 	ps.setNegative(value&0x80 != 0)
+}
+
+func (ps *ProcessorStatus) setNegByValue(value uint8) {
+	ps.setNegative(value&0x80 != 0)
+}
+
+func (ps *ProcessorStatus) setOverflowByValue(value uint8) {
+	ps.setOverflow(value&0x40 != 0)
 }

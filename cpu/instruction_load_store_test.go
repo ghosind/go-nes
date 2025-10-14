@@ -16,10 +16,10 @@ func TestCPU_LDA_IMM(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     2,
+		expectedA:  pointer(uint8(0x42)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.a, uint8(0x42))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDA_ZP(t *testing.T) {
@@ -33,10 +33,10 @@ func TestCPU_LDA_ZP(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     3,
+		expectedA:  pointer(uint8(0x37)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.a, uint8(0x37))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDA_ZP_X(t *testing.T) {
@@ -51,10 +51,10 @@ func TestCPU_LDA_ZP_X(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     4,
+		expectedA:  pointer(uint8(0x58)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.a, uint8(0x58))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDA_ABS(t *testing.T) {
@@ -69,10 +69,10 @@ func TestCPU_LDA_ABS(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     4,
+		expectedA:  pointer(uint8(0x7A)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.a, uint8(0x7A))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDA_ABS_X(t *testing.T) {
@@ -89,10 +89,10 @@ func TestCPU_LDA_ABS_X(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     4,
+		expectedA:  pointer(uint8(0x9C)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.a, uint8(0x9C))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDA_ABS_Y(t *testing.T) {
@@ -108,10 +108,10 @@ func TestCPU_LDA_ABS_Y(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: psFlagNegative, // Expect Negative flag to be set
 		cycles:     4,
+		expectedA:  pointer(uint8(0xFF)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.a, uint8(0xFF))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDA_IND_X(t *testing.T) {
@@ -128,10 +128,10 @@ func TestCPU_LDA_IND_X(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     6,
+		expectedA:  pointer(uint8(0x66)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.a, uint8(0x66))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDA_IND_Y(t *testing.T) {
@@ -148,10 +148,10 @@ func TestCPU_LDA_IND_Y(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: psFlagNegative, // Expect Negative flag to be set
 		cycles:     5,
+		expectedA:  pointer(uint8(0xAB)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.a, uint8(0xAB))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDX_IMM(t *testing.T) {
@@ -164,10 +164,10 @@ func TestCPU_LDX_IMM(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     2,
+		expectedX:  pointer(uint8(0x55)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.x, uint8(0x55))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDX_ZP(t *testing.T) {
@@ -181,10 +181,10 @@ func TestCPU_LDX_ZP(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     3,
+		expectedX:  pointer(uint8(0x33)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.x, uint8(0x33))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDX_ZP_Y(t *testing.T) {
@@ -199,10 +199,10 @@ func TestCPU_LDX_ZP_Y(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     4,
+		expectedX:  pointer(uint8(0x77)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.x, uint8(0x77))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDX_ABS(t *testing.T) {
@@ -217,10 +217,10 @@ func TestCPU_LDX_ABS(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: psFlagNegative, // Expect Negative flag to be set
 		cycles:     4,
+		expectedX:  pointer(uint8(0x88)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.x, uint8(0x88))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDX_ABS_Y(t *testing.T) {
@@ -236,10 +236,10 @@ func TestCPU_LDX_ABS_Y(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     4,
+		expectedX:  pointer(uint8(0x22)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.x, uint8(0x22))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDY_IMM(t *testing.T) {
@@ -252,10 +252,10 @@ func TestCPU_LDY_IMM(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: psFlagNegative, // Expect Negative flag to be set
 		cycles:     2,
+		expectedY:  pointer(uint8(0x99)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.y, uint8(0x99))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDY_ZP(t *testing.T) {
@@ -269,10 +269,10 @@ func TestCPU_LDY_ZP(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     3,
+		expectedY:  pointer(uint8(0x44)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.y, uint8(0x44))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDY_ZP_X(t *testing.T) {
@@ -287,10 +287,10 @@ func TestCPU_LDY_ZP_X(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     4,
+		expectedY:  pointer(uint8(0x11)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.y, uint8(0x11))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDY_ABS(t *testing.T) {
@@ -305,10 +305,10 @@ func TestCPU_LDY_ABS(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: psFlagNegative, // Expect Negative flag to be set
 		cycles:     4,
+		expectedY:  pointer(uint8(0xFE)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.y, uint8(0xFE))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_LDY_ABS_X(t *testing.T) {
@@ -324,10 +324,10 @@ func TestCPU_LDY_ABS_X(t *testing.T) {
 		psMask:     psFlagZero & psFlagNegative,
 		expectedPS: 0x00, // Expect neither Zero nor Negative flags to be set
 		cycles:     4,
+		expectedY:  pointer(uint8(0x66)),
 	}
 
-	cpu := testCPUInstruction(a, vector)
-	a.EqualNow(cpu.y, uint8(0x66))
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_STA_ZP(t *testing.T) {

@@ -23,7 +23,7 @@ func (cpu *CPU) Reset() {
 	cpu.a = 0
 	cpu.x = 0
 	cpu.y = 0
-	*cpu.ps = 0x24 // Set unused flag to 1 and interrupt disable to 1
+	*cpu.ps = psFlagUnused | psFlagInterrupt // Set unused flag to 1 and interrupt disable to 1
 }
 
 func (cpu *CPU) Step() int {
