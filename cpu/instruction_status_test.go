@@ -8,119 +8,102 @@ import (
 
 func TestCPU_CLC(t *testing.T) {
 	a := assert.New(t)
+	vector := instructionTestVector{
+		memory: map[uint16]uint8{
+			0x8000: 0x18, // CLC opcode
+		},
+		ps:         psFlagCarry, // Initial PS with Carry flag set
+		cycles:     2,
+		psMask:     psFlagCarry,
+		expectedPS: 0, // Expect Carry flag to be cleared
+	}
 
-	cpu := NewCPU()
-	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
-	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
-	cpu.mem[0x8000] = 0x18 // CLC opcode
-	cpu.Reset()
-	cpu.ps.setCarry(true) // Set carry flag to true
-
-	cycles := cpu.Step()
-	cpu.Step()
-
-	a.EqualNow(cpu.ps.getCarry(), false)
-	a.EqualNow(cycles, 2)
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_CLD(t *testing.T) {
 	a := assert.New(t)
+	vector := instructionTestVector{
+		memory: map[uint16]uint8{
+			0x8000: 0xD8, // CLD opcode
+		},
+		ps:         psFlagDecimal, // Initial PS with Decimal flag set
+		cycles:     2,
+		psMask:     psFlagDecimal,
+		expectedPS: 0, // Expect Decimal flag to be cleared
+	}
 
-	cpu := NewCPU()
-	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
-	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
-	cpu.mem[0x8000] = 0xD8 // CLD opcode
-	cpu.Reset()
-	cpu.ps.setDecimal(true) // Set decimal flag to true
-
-	cycles := cpu.Step()
-	cpu.Step()
-
-	a.EqualNow(cpu.ps.getDecimal(), false)
-	a.EqualNow(cycles, 2)
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_CLI(t *testing.T) {
 	a := assert.New(t)
+	vector := instructionTestVector{
+		memory: map[uint16]uint8{
+			0x8000: 0x58, // CLI opcode
+		},
+		ps:         psFlagInterrupt, // Initial PS with Interrupt flag set
+		cycles:     2,
+		psMask:     psFlagInterrupt,
+		expectedPS: 0, // Expect Interrupt flag to be cleared
+	}
 
-	cpu := NewCPU()
-	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
-	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
-	cpu.mem[0x8000] = 0x58 // CLI opcode
-	cpu.Reset()
-	cpu.ps.setInterrupt(true) // Set interrupt flag to true
-
-	cycles := cpu.Step()
-	cpu.Step()
-
-	a.EqualNow(cpu.ps.getInterrupt(), false)
-	a.EqualNow(cycles, 2)
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_CLV(t *testing.T) {
 	a := assert.New(t)
+	vector := instructionTestVector{
+		memory: map[uint16]uint8{
+			0x8000: 0xB8, // CLV opcode
+		},
+		ps:         psFlagOverflow, // Initial PS with Overflow flag set
+		cycles:     2,
+		psMask:     psFlagOverflow,
+		expectedPS: 0, // Expect Overflow flag to be cleared
+	}
 
-	cpu := NewCPU()
-	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
-	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
-	cpu.mem[0x8000] = 0xB8 // CLV opcode
-	cpu.Reset()
-	cpu.ps.setOverflow(true) // Set overflow flag to true
-
-	cycles := cpu.Step()
-	cpu.Step()
-
-	a.EqualNow(cpu.ps.getOverflow(), false)
-	a.EqualNow(cycles, 2)
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_SEC(t *testing.T) {
 	a := assert.New(t)
+	vector := instructionTestVector{
+		memory: map[uint16]uint8{
+			0x8000: 0x38, // SEC opcode
+		},
+		cycles:     2,
+		psMask:     psFlagCarry,
+		expectedPS: psFlagCarry, // Expect Carry flag to be set
+	}
 
-	cpu := NewCPU()
-	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
-	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
-	cpu.mem[0x8000] = 0x38 // SEC opcode
-	cpu.Reset()
-	cpu.ps.setCarry(false) // Set carry flag to false
-
-	cycles := cpu.Step()
-	cpu.Step()
-
-	a.EqualNow(cpu.ps.getCarry(), true)
-	a.EqualNow(cycles, 2)
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_SED(t *testing.T) {
 	a := assert.New(t)
+	vector := instructionTestVector{
+		memory: map[uint16]uint8{
+			0x8000: 0xF8, // SED opcode
+		},
+		cycles:     2,
+		psMask:     psFlagDecimal,
+		expectedPS: psFlagDecimal, // Expect Decimal flag to be set
+	}
 
-	cpu := NewCPU()
-	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
-	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
-	cpu.mem[0x8000] = 0xF8 // SED opcode
-	cpu.Reset()
-	cpu.ps.setDecimal(false) // Set decimal flag to false
-
-	cycles := cpu.Step()
-	cpu.Step()
-
-	a.EqualNow(cpu.ps.getDecimal(), true)
-	a.EqualNow(cycles, 2)
+	testCPUInstruction(a, vector)
 }
 
 func TestCPU_SEI(t *testing.T) {
 	a := assert.New(t)
+	vector := instructionTestVector{
+		memory: map[uint16]uint8{
+			0x8000: 0x78, // SEI opcode
+		},
+		cycles:     2,
+		psMask:     psFlagInterrupt,
+		expectedPS: psFlagInterrupt, // Expect Interrupt flag to be set
+	}
 
-	cpu := NewCPU()
-	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
-	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
-	cpu.mem[0x8000] = 0x78 // SEI opcode
-	cpu.Reset()
-	cpu.ps.setInterrupt(false) // Set interrupt flag to false
-
-	cycles := cpu.Step()
-	cpu.Step()
-
-	a.EqualNow(cpu.ps.getInterrupt(), true)
-	a.EqualNow(cycles, 2)
+	testCPUInstruction(a, vector)
 }

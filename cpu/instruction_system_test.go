@@ -8,14 +8,12 @@ import (
 
 func TestCPU_NOP(t *testing.T) {
 	a := assert.New(t)
+	vector := instructionTestVector{
+		memory: map[uint16]uint8{
+			0x8000: 0xEA, // NOP opcode
+		},
+		cycles: 2,
+	}
 
-	cpu := NewCPU()
-	cpu.mem[0xFFFC] = 0x00 // Reset vector low byte
-	cpu.mem[0xFFFD] = 0x80 // Reset vector high byte
-	cpu.mem[0x8000] = 0xEA // NOP opcode
-	cpu.Reset()
-
-	cycles := cpu.Step()
-
-	a.EqualNow(cycles, 2)
+	testCPUInstruction(a, vector)
 }
