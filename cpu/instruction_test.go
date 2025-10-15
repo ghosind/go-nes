@@ -20,6 +20,7 @@ type instructionTestVector struct {
 	expectedX   *uint8
 	expectedY   *uint8
 	expectedSP  *uint8
+	expectedPC  *uint16
 }
 
 func pointer[T any](v T) *T {
@@ -81,6 +82,9 @@ func testCPUInstruction(a *assert.Assertion, vector instructionTestVector) *CPU 
 	}
 	if vector.expectedSP != nil {
 		a.EqualNow(cpu.sp, *vector.expectedSP, "Expected SP to be 0x%02X, got 0x%02X", *vector.expectedSP, cpu.sp)
+	}
+	if vector.expectedPC != nil {
+		a.EqualNow(cpu.pc, *vector.expectedPC, "Expected PC to be 0x%04X, got 0x%04X", *vector.expectedPC, cpu.pc)
 	}
 
 	// Return the CPU instance to allow further assertions if needed

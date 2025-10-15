@@ -42,92 +42,92 @@ var (
 		0x8C: {execute: (*CPU).sty_abs, addressing: addressingModeAbsolute, cycles: 4},          // STY Absolute
 
 		// Register Transfers
-		0xAA: {}, // TAX - Transfer Accumulator to X
-		0xA8: {}, // TAY - Transfer Accumulator to Y
-		0x8A: {}, // TXA - Transfer X to Accumulator
-		0x98: {}, // TYA - Transfer Y to Accumulator
+		0xAA: {execute: (*CPU).tax, addressing: addressingModeImplied, cycles: 2}, // TAX - Transfer Accumulator to X
+		0xA8: {execute: (*CPU).tay, addressing: addressingModeImplied, cycles: 2}, // TAY - Transfer Accumulator to Y
+		0x8A: {execute: (*CPU).txa, addressing: addressingModeImplied, cycles: 2}, // TXA - Transfer X to Accumulator
+		0x98: {execute: (*CPU).tya, addressing: addressingModeImplied, cycles: 2}, // TYA - Transfer Y to Accumulator
 
 		// Stack Operations
-		0xBA: {}, // TSX - Transfer Stack Pointer to X
-		0x9A: {}, // TXS - Transfer X to Stack Pointer
-		0x48: {}, // PHA - Push Accumulator onto Stack
-		0x68: {}, // PLA - Pull Accumulator from Stack
-		0x08: {}, // PHP - Push Processor Status onto Stack
-		0x28: {}, // PLP - Pull Processor Status from Stack
+		0xBA: {execute: (*CPU).tsx, addressing: addressingModeImplied, cycles: 2}, // TSX - Transfer Stack Pointer to X
+		0x9A: {execute: (*CPU).txs, addressing: addressingModeImplied, cycles: 2}, // TXS - Transfer X to Stack Pointer
+		0x48: {execute: (*CPU).pha, addressing: addressingModeImplied, cycles: 3}, // PHA - Push Accumulator onto Stack
+		0x68: {execute: (*CPU).pla, addressing: addressingModeImplied, cycles: 4}, // PLA - Pull Accumulator from Stack
+		0x08: {execute: (*CPU).php, addressing: addressingModeImplied, cycles: 3}, // PHP - Push Processor Status onto Stack
+		0x28: {execute: (*CPU).plp, addressing: addressingModeImplied, cycles: 4}, // PLP - Pull Processor Status from Stack
 
 		// Logical Operations
-		0x29: {}, // AND Immediate
-		0x25: {}, // AND Zero Page
-		0x35: {}, // AND Zero Page, X
-		0x2D: {}, // AND Absolute
-		0x3D: {}, // AND Absolute, X
-		0x39: {}, // AND Absolute, Y
-		0x21: {}, // AND (Indirect, X)
-		0x31: {}, // AND (Indirect), Y
-		0x49: {}, // EOR Immediate
-		0x45: {}, // EOR Zero Page
-		0x55: {}, // EOR Zero Page, X
-		0x4D: {}, // EOR Absolute
-		0x5D: {}, // EOR Absolute, X
-		0x59: {}, // EOR Absolute, Y
-		0x41: {}, // EOR (Indirect, X)
-		0x51: {}, // EOR (Indirect), Y
-		0x09: {}, // ORA Immediate
-		0x05: {}, // ORA Zero Page
-		0x15: {}, // ORA Zero Page, X
-		0x0D: {}, // ORA Absolute
-		0x1D: {}, // ORA Absolute, X
-		0x19: {}, // ORA Absolute, Y
-		0x01: {}, // ORA (Indirect, X)
-		0x11: {}, // ORA (Indirect), Y
-		0x24: {}, // BIT Zero Page
-		0x2C: {}, // BIT Absolute
+		0x29: {execute: (*CPU).and_imm, addressing: addressingModeImmediate, cycles: 2},         // AND Immediate
+		0x25: {execute: (*CPU).and_zp, addressing: addressingModeZeroPage, cycles: 3},           // AND Zero Page
+		0x35: {execute: (*CPU).and_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // AND Zero Page, X
+		0x2D: {execute: (*CPU).and_abs, addressing: addressingModeAbsolute, cycles: 4},          // AND Absolute
+		0x3D: {execute: (*CPU).and_abs_x, addressing: addressingModeAbsoluteX, cycles: 4},       // AND Absolute, X
+		0x39: {execute: (*CPU).and_abs_y, addressing: addressingModeAbsoluteY, cycles: 4},       // AND Absolute, Y
+		0x21: {execute: (*CPU).and_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6}, // AND (Indirect, X)
+		0x31: {execute: (*CPU).and_ind_y, addressing: addressingModeIndirectIndexed, cycles: 5}, // AND (Indirect), Y
+		0x49: {execute: (*CPU).eor_imm, addressing: addressingModeImmediate, cycles: 2},         // EOR Immediate
+		0x45: {execute: (*CPU).eor_zp, addressing: addressingModeZeroPage, cycles: 3},           // EOR Zero Page
+		0x55: {execute: (*CPU).eor_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // EOR Zero Page, X
+		0x4D: {execute: (*CPU).eor_abs, addressing: addressingModeAbsolute, cycles: 4},          // EOR Absolute
+		0x5D: {execute: (*CPU).eor_abs_x, addressing: addressingModeAbsoluteX, cycles: 4},       // EOR Absolute, X
+		0x59: {execute: (*CPU).eor_abs_y, addressing: addressingModeAbsoluteY, cycles: 4},       // EOR Absolute, Y
+		0x41: {execute: (*CPU).eor_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6}, // EOR (Indirect, X)
+		0x51: {execute: (*CPU).eor_ind_y, addressing: addressingModeIndirectIndexed, cycles: 5}, // EOR (Indirect), Y
+		0x09: {execute: (*CPU).ora_imm, addressing: addressingModeImmediate, cycles: 2},         // ORA Immediate
+		0x05: {execute: (*CPU).ora_zp, addressing: addressingModeZeroPage, cycles: 3},           // ORA Zero Page
+		0x15: {execute: (*CPU).ora_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // ORA Zero Page, X
+		0x0D: {execute: (*CPU).ora_abs, addressing: addressingModeAbsolute, cycles: 4},          // ORA Absolute
+		0x1D: {execute: (*CPU).ora_abs_x, addressing: addressingModeAbsoluteX, cycles: 4},       // ORA Absolute, X
+		0x19: {execute: (*CPU).ora_abs_y, addressing: addressingModeAbsoluteY, cycles: 4},       // ORA Absolute, Y
+		0x01: {execute: (*CPU).ora_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6}, // ORA (Indirect, X)
+		0x11: {execute: (*CPU).ora_ind_y, addressing: addressingModeIndirectIndexed, cycles: 5}, // ORA (Indirect), Y
+		0x24: {execute: (*CPU).bit_zp, addressing: addressingModeZeroPage, cycles: 3},           // BIT Zero Page
+		0x2C: {execute: (*CPU).bit_abs, addressing: addressingModeAbsolute, cycles: 4},          // BIT Absolute
 
 		// Arithmetic
-		0x69: {}, // ADC Immediate
-		0x65: {}, // ADC Zero Page
-		0x75: {}, // ADC Zero Page, X
-		0x6D: {}, // ADC Absolute
-		0x7D: {}, // ADC Absolute, X
-		0x79: {}, // ADC Absolute, Y
-		0x61: {}, // ADC (Indirect, X)
-		0x71: {}, // ADC (Indirect), Y
-		0xE9: {}, // SBC Immediate
-		0xE5: {}, // SBC Zero Page
-		0xF5: {}, // SBC Zero Page, X
-		0xED: {}, // SBC Absolute
-		0xFD: {}, // SBC Absolute, X
-		0xF9: {}, // SBC Absolute, Y
-		0xE1: {}, // SBC (Indirect, X)
-		0xF1: {}, // SBC (Indirect), Y
-		0xC9: {}, // CMP Immediate
-		0xC5: {}, // CMP Zero Page
-		0xD5: {}, // CMP Zero Page, X
-		0xCD: {}, // CMP Absolute
-		0xDD: {}, // CMP Absolute, X
-		0xD9: {}, // CMP Absolute, Y
-		0xC1: {}, // CMP (Indirect, X)
-		0xD1: {}, // CMP (Indirect), Y
-		0xE0: {}, // CPX Immediate
-		0xE4: {}, // CPX Zero Page
-		0xEC: {}, // CPX Absolute
-		0xC0: {}, // CPY Immediate
-		0xC4: {}, // CPY Zero Page
-		0xCC: {}, // CPY Absolute
+		0x69: {execute: (*CPU).adc_imm, addressing: addressingModeImmediate, cycles: 2},         // ADC Immediate
+		0x65: {execute: (*CPU).adc_zp, addressing: addressingModeZeroPage, cycles: 3},           // ADC Zero Page
+		0x75: {execute: (*CPU).adc_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // ADC Zero Page, X
+		0x6D: {execute: (*CPU).adc_abs, addressing: addressingModeAbsolute, cycles: 4},          // ADC Absolute
+		0x7D: {execute: (*CPU).adc_abs_x, addressing: addressingModeAbsoluteX, cycles: 4},       // ADC Absolute, X
+		0x79: {execute: (*CPU).adc_abs_y, addressing: addressingModeAbsoluteY, cycles: 4},       // ADC Absolute, Y
+		0x61: {execute: (*CPU).adc_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6}, // ADC (Indirect, X)
+		0x71: {execute: (*CPU).adc_ind_y, addressing: addressingModeIndirectIndexed, cycles: 5}, // ADC (Indirect), Y
+		0xE9: {execute: (*CPU).sbc_imm, addressing: addressingModeImmediate, cycles: 2},         // SBC Immediate
+		0xE5: {execute: (*CPU).sbc_zp, addressing: addressingModeZeroPage, cycles: 3},           // SBC Zero Page
+		0xF5: {execute: (*CPU).sbc_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // SBC Zero Page, X
+		0xED: {execute: (*CPU).sbc_abs, addressing: addressingModeAbsolute, cycles: 4},          // SBC Absolute
+		0xFD: {execute: (*CPU).sbc_abs_x, addressing: addressingModeAbsoluteX, cycles: 4},       // SBC Absolute, X
+		0xF9: {execute: (*CPU).sbc_abs_y, addressing: addressingModeAbsoluteY, cycles: 4},       // SBC Absolute, Y
+		0xE1: {execute: (*CPU).sbc_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6}, // SBC (Indirect, X)
+		0xF1: {execute: (*CPU).sbc_ind_y, addressing: addressingModeIndirectIndexed, cycles: 5}, // SBC (Indirect), Y
+		0xC9: {execute: (*CPU).cmp_imm, addressing: addressingModeImmediate, cycles: 2},         // CMP Immediate
+		0xC5: {execute: (*CPU).cmp_zp, addressing: addressingModeZeroPage, cycles: 3},           // CMP Zero Page
+		0xD5: {execute: (*CPU).cmp_zp_x, addressing: addressingModeZeroPageX, cycles: 4},        // CMP Zero Page, X
+		0xCD: {execute: (*CPU).cmp_abs, addressing: addressingModeAbsolute, cycles: 4},          // CMP Absolute
+		0xDD: {execute: (*CPU).cmp_abs_x, addressing: addressingModeAbsoluteX, cycles: 4},       // CMP Absolute, X
+		0xD9: {execute: (*CPU).cmp_abs_y, addressing: addressingModeAbsoluteY, cycles: 4},       // CMP Absolute, Y
+		0xC1: {execute: (*CPU).cmp_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6}, // CMP (Indirect, X)
+		0xD1: {execute: (*CPU).cmp_ind_y, addressing: addressingModeIndirectIndexed, cycles: 5}, // CMP (Indirect), Y
+		0xE0: {execute: (*CPU).cpx_imm, addressing: addressingModeImmediate, cycles: 2},         // CPX Immediate
+		0xE4: {execute: (*CPU).cpx_zp, addressing: addressingModeZeroPage, cycles: 3},           // CPX Zero Page
+		0xEC: {execute: (*CPU).cpx_abs, addressing: addressingModeAbsolute, cycles: 4},          // CPX Absolute
+		0xC0: {execute: (*CPU).cpy_imm, addressing: addressingModeImmediate, cycles: 2},         // CPY Immediate
+		0xC4: {execute: (*CPU).cpy_zp, addressing: addressingModeZeroPage, cycles: 3},           // CPY Zero Page
+		0xCC: {execute: (*CPU).cpy_abs, addressing: addressingModeAbsolute, cycles: 4},          // CPY Absolute
 
 		// Increments & Decrements
-		0xE6: {}, // INC Zero Page
-		0xF6: {}, // INC Zero Page, X
-		0xEE: {}, // INC Absolute
-		0xFE: {}, // INC Absolute, X
-		0xE8: {}, // INX - Increment X
-		0xC8: {}, // INY - Increment Y
-		0xC6: {}, // DEC Zero Page
-		0xD6: {}, // DEC Zero Page, X
-		0xCE: {}, // DEC Absolute
-		0xDE: {}, // DEC Absolute, X
-		0xCA: {}, // DEX - Decrement X
-		0x88: {}, // DEY - Decrement Y
+		0xE6: {execute: (*CPU).inc_zp, addressing: addressingModeZeroPage, cycles: 5},     // INC Zero Page
+		0xF6: {execute: (*CPU).inc_zp_x, addressing: addressingModeZeroPageX, cycles: 6},  // INC Zero Page, X
+		0xEE: {execute: (*CPU).inc_abs, addressing: addressingModeAbsolute, cycles: 6},    // INC Absolute
+		0xFE: {execute: (*CPU).inc_abs_x, addressing: addressingModeAbsoluteX, cycles: 7}, // INC Absolute, X
+		0xE8: {execute: (*CPU).inx, addressing: addressingModeImplied, cycles: 2},         // INX - Increment X
+		0xC8: {execute: (*CPU).iny, addressing: addressingModeImplied, cycles: 2},         // INY - Increment Y
+		0xC6: {execute: (*CPU).dec_zp, addressing: addressingModeZeroPage, cycles: 5},     // DEC Zero Page
+		0xD6: {execute: (*CPU).dec_zp_x, addressing: addressingModeZeroPageX, cycles: 6},  // DEC Zero Page, X
+		0xCE: {execute: (*CPU).dec_abs, addressing: addressingModeAbsolute, cycles: 6},    // DEC Absolute
+		0xDE: {execute: (*CPU).dec_abs_x, addressing: addressingModeAbsoluteX, cycles: 7}, // DEC Absolute, X
+		0xCA: {execute: (*CPU).dex, addressing: addressingModeImplied, cycles: 2},         // DEX - Decrement X
+		0x88: {execute: (*CPU).dey, addressing: addressingModeImplied, cycles: 2},         // DEY - Decrement Y
 
 		// Shifts
 		0x0A: {}, // ASL Accumulator
@@ -152,10 +152,10 @@ var (
 		0x7E: {}, // ROR Absolute, X
 
 		// Jumps & Calls
-		0x4C: {}, // JMP Absolute
-		0x6C: {}, // JMP Indirect
-		0x20: {}, // JSR - Jump to Subroutine
-		0x60: {}, // RTS - Return from Subroutine
+		0x4C: {execute: (*CPU).jmp_abs, addressing: addressingModeAbsolute, cycles: 3}, // JMP Absolute
+		0x6C: {execute: (*CPU).jmp_ind, addressing: addressingModeIndirect, cycles: 5}, // JMP Indirect
+		0x20: {execute: (*CPU).jsr, addressing: addressingModeAbsolute, cycles: 6},     // JSR - Jump to Subroutine
+		0x60: {execute: (*CPU).rts, addressing: addressingModeImplied, cycles: 6},      // RTS - Return from Subroutine
 
 		// Branches
 		0x90: {}, // BCC - Branch if Carry Clear
