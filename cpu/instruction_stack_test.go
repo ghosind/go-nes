@@ -2,15 +2,13 @@ package cpu
 
 import (
 	"testing"
-
-	"github.com/ghosind/go-assert"
 )
 
 func TestCPU_TSX(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "TSX",
 		memory: map[uint16]uint8{
-			0x8000: 0xBA, // TSX opcode
+			0x8000: 0xBA, // TSX
 		},
 		cycles:     2,
 		psMask:     psFlagZero | psFlagNegative,
@@ -18,28 +16,28 @@ func TestCPU_TSX(t *testing.T) {
 		expectedX:  pointer(uint8(0xFD)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_TXS(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "TXS",
 		memory: map[uint16]uint8{
-			0x8000: 0x9A, // TXS opcode
+			0x8000: 0x9A, // TXS
 		},
 		x:          0x42,
 		cycles:     2,
 		expectedSP: pointer(uint8(0x42)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_PHA(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "PHA",
 		memory: map[uint16]uint8{
-			0x8000: 0x48, // PHA opcode
+			0x8000: 0x48, // PHA
 		},
 		a:      0x42,
 		cycles: 3,
@@ -49,14 +47,14 @@ func TestCPU_PHA(t *testing.T) {
 		expectedSP: pointer(uint8(0xFC)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_PHP(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "PHP",
 		memory: map[uint16]uint8{
-			0x8000: 0x08, // PHP opcode
+			0x8000: 0x08, // PHP
 		},
 		ps:     psFlagNegative | psFlagOverflow, // Set Negative and Overflow flags
 		cycles: 3,
@@ -67,14 +65,14 @@ func TestCPU_PHP(t *testing.T) {
 		expectedSP: pointer(uint8(0xFC)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_PLA(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "PLA",
 		memory: map[uint16]uint8{
-			0x8000:       0x68, // PLA opcode
+			0x8000:       0x68, // PLA
 			0x100 | 0x43: 0x37, // Value to be pulled from stack
 		},
 		sp:         pointer(uint8(0x42)),
@@ -85,22 +83,22 @@ func TestCPU_PLA(t *testing.T) {
 		expectedSP: pointer(uint8(0x43)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_PLP(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "PLP",
 		memory: map[uint16]uint8{
-			0x8000:       0x28, // PLP opcode
+			0x8000:       0x28, // PLP
 			0x100 | 0x43: 0b00111111,
 		},
 		sp:         pointer(uint8(0x42)),
 		cycles:     4,
-		psMask:     0xFF,
+		psMask:     0xFF,       // Check all flags
 		expectedPS: 0b00111111, // Expect all flags to be set as per the value pulled from stack
 		expectedSP: pointer(uint8(0x43)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }

@@ -2,15 +2,13 @@ package cpu
 
 import (
 	"testing"
-
-	"github.com/ghosind/go-assert"
 )
 
 func TestCPU_JMP_ABS(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "JMP Absolute",
 		memory: map[uint16]uint8{
-			0x8000: 0x4C, // JMP Absolute opcode
+			0x8000: 0x4C, // JMP Absolute
 			0x8001: 0x00, // Low byte of target address
 			0x8002: 0x90, // High byte of target address
 		},
@@ -18,14 +16,14 @@ func TestCPU_JMP_ABS(t *testing.T) {
 		expectedPC: pointer(uint16(0x9000)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_JMP_IND(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "JMP Indirect",
 		memory: map[uint16]uint8{
-			0x8000: 0x6C, // JMP Indirect opcode
+			0x8000: 0x6C, // JMP Indirect
 			0x8001: 0x00, // Low byte of pointer address
 			0x8002: 0x90, // High byte of pointer address
 			0x9000: 0x34, // Low byte of target address
@@ -35,14 +33,14 @@ func TestCPU_JMP_IND(t *testing.T) {
 		expectedPC: pointer(uint16(0x1234)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_JSR(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "JSR",
 		memory: map[uint16]uint8{
-			0x8000: 0x20, // JSR opcode
+			0x8000: 0x20, // JSR
 			0x8001: 0x00, // Low byte of target address
 			0x8002: 0x90, // High byte of target address
 		},
@@ -55,14 +53,14 @@ func TestCPU_JSR(t *testing.T) {
 		expectedSP: pointer(uint8(0xFB)), // Stack pointer should be decremented by 2
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_RTS(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "RTS",
 		memory: map[uint16]uint8{
-			0x8000: 0x60, // RTS opcode
+			0x8000: 0x60, // RTS
 			0x01FC: 0x02, // Low byte of return address
 			0x01FD: 0x80, // High byte of return address
 		},
@@ -72,5 +70,5 @@ func TestCPU_RTS(t *testing.T) {
 		expectedSP: pointer(uint8(0xFD)),    // Stack pointer should be incremented by 2
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }

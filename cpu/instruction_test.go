@@ -1,8 +1,15 @@
 package cpu
 
-import "github.com/ghosind/go-assert"
+import (
+	"testing"
+
+	"github.com/ghosind/go-assert"
+)
 
 type instructionTestVector struct {
+	// Descriptive name for the test case
+	name string
+
 	// Initial CPU state
 	memory map[uint16]uint8
 	a      uint8
@@ -27,7 +34,11 @@ func pointer[T any](v T) *T {
 	return &v
 }
 
-func testCPUInstruction(a *assert.Assertion, vector instructionTestVector) *CPU {
+func (vector *instructionTestVector) test(t *testing.T) *CPU {
+	// Create a new assertion context and mark it as a helper
+	a := assert.New(t)
+	a.Helper()
+
 	// Create a new CPU instance
 	cpu := NewCPU()
 
@@ -58,33 +69,36 @@ func testCPUInstruction(a *assert.Assertion, vector instructionTestVector) *CPU 
 
 	// Validate the clock cycles, processor status, and memory state
 	if vector.cycles != 0 {
-		a.EqualNow(cycles, vector.cycles, "Expected %d cycles, got %d", vector.cycles, cycles)
+		a.EqualNow(cycles, vector.cycles,
+			"%s: expected %d cycles, got %d", vector.name, vector.cycles, cycles)
 	}
 	if vector.psMask != 0 {
 		actual := *cpu.ps & vector.psMask
 		expected := vector.expectedPS & vector.psMask
-		a.EqualNow(actual, expected, "Expected PS flags %08b, got %08b", expected, actual)
+		a.EqualNow(actual, expected,
+			"%s: expected PS flags %08b, got %08b", vector.name, expected, actual)
 	}
 	for addr, value := range vector.expectedMem {
 		a.EqualNow(cpu.mem[addr], value,
-			"Expected memory at 0x%04X to be 0x%02X, got 0x%02X", addr, value, cpu.mem[addr])
+			"%s: expected memory at 0x%04X to be 0x%02X, got 0x%02X",
+			vector.name, addr, value, cpu.mem[addr])
 	}
 
 	// Validate CPU registers if expected values are provided
 	if vector.expectedA != nil {
-		a.EqualNow(cpu.a, *vector.expectedA, "Expected A to be 0x%02X, got 0x%02X", *vector.expectedA, cpu.a)
+		a.EqualNow(cpu.a, *vector.expectedA, "%s: expected A to be 0x%02X, got 0x%02X", vector.name, *vector.expectedA, cpu.a)
 	}
 	if vector.expectedX != nil {
-		a.EqualNow(cpu.x, *vector.expectedX, "Expected X to be 0x%02X, got 0x%02X", *vector.expectedX, cpu.x)
+		a.EqualNow(cpu.x, *vector.expectedX, "%s: expected X to be 0x%02X, got 0x%02X", vector.name, *vector.expectedX, cpu.x)
 	}
 	if vector.expectedY != nil {
-		a.EqualNow(cpu.y, *vector.expectedY, "Expected Y to be 0x%02X, got 0x%02X", *vector.expectedY, cpu.y)
+		a.EqualNow(cpu.y, *vector.expectedY, "%s: expected Y to be 0x%02X, got 0x%02X", vector.name, *vector.expectedY, cpu.y)
 	}
 	if vector.expectedSP != nil {
-		a.EqualNow(cpu.sp, *vector.expectedSP, "Expected SP to be 0x%02X, got 0x%02X", *vector.expectedSP, cpu.sp)
+		a.EqualNow(cpu.sp, *vector.expectedSP, "%s: expected SP to be 0x%02X, got 0x%02X", vector.name, *vector.expectedSP, cpu.sp)
 	}
 	if vector.expectedPC != nil {
-		a.EqualNow(cpu.pc, *vector.expectedPC, "Expected PC to be 0x%04X, got 0x%04X", *vector.expectedPC, cpu.pc)
+		a.EqualNow(cpu.pc, *vector.expectedPC, "%s: expected PC to be 0x%04X, got 0x%04X", vector.name, *vector.expectedPC, cpu.pc)
 	}
 
 	// Return the CPU instance to allow further assertions if needed

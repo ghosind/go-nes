@@ -2,15 +2,13 @@ package cpu
 
 import (
 	"testing"
-
-	"github.com/ghosind/go-assert"
 )
 
 func TestCPU_TAX(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "TAX",
 		memory: map[uint16]uint8{
-			0x8000: 0xAA, // TAX opcode
+			0x8000: 0xAA, // TAX
 		},
 		a:          0x42,
 		cycles:     2,
@@ -19,14 +17,14 @@ func TestCPU_TAX(t *testing.T) {
 		expectedX:  pointer(uint8(0x42)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_TAY(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "TAY",
 		memory: map[uint16]uint8{
-			0x8000: 0xA8, // TAY opcode
+			0x8000: 0xA8, // TAY
 		},
 		a:          0x42,
 		cycles:     2,
@@ -35,14 +33,14 @@ func TestCPU_TAY(t *testing.T) {
 		expectedY:  pointer(uint8(0x42)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_TXA(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "TXA",
 		memory: map[uint16]uint8{
-			0x8000: 0x8A, // TXA opcode
+			0x8000: 0x8A, // TXA
 		},
 		x:          0x42,
 		cycles:     2,
@@ -51,14 +49,14 @@ func TestCPU_TXA(t *testing.T) {
 		expectedA:  pointer(uint8(0x42)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
 
 func TestCPU_TYA(t *testing.T) {
-	a := assert.New(t)
-	vector := instructionTestVector{
+	vector := &instructionTestVector{
+		name: "TYA",
 		memory: map[uint16]uint8{
-			0x8000: 0x98, // TYA opcode
+			0x8000: 0x98, // TYA
 		},
 		y:          0x42,
 		cycles:     2,
@@ -67,5 +65,5 @@ func TestCPU_TYA(t *testing.T) {
 		expectedA:  pointer(uint8(0x42)),
 	}
 
-	testCPUInstruction(a, vector)
+	vector.test(t)
 }
