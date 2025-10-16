@@ -130,26 +130,26 @@ var (
 		0x88: {execute: (*CPU).dey, addressing: addressingModeImplied, cycles: 2},         // DEY - Decrement Y
 
 		// Shifts
-		0x0A: {}, // ASL Accumulator
-		0x06: {}, // ASL Zero Page
-		0x16: {}, // ASL Zero Page, X
-		0x0E: {}, // ASL Absolute
-		0x1E: {}, // ASL Absolute, X
-		0x4A: {}, // LSR Accumulator
-		0x46: {}, // LSR Zero Page
-		0x56: {}, // LSR Zero Page, X
-		0x4E: {}, // LSR Absolute
-		0x5E: {}, // LSR Absolute, X
-		0x2A: {}, // ROL Accumulator
-		0x26: {}, // ROL Zero Page
-		0x36: {}, // ROL Zero Page, X
-		0x2E: {}, // ROL Absolute
-		0x3E: {}, // ROL Absolute, X
-		0x6A: {}, // ROR Accumulator
-		0x66: {}, // ROR Zero Page
-		0x76: {}, // ROR Zero Page, X
-		0x6E: {}, // ROR Absolute
-		0x7E: {}, // ROR Absolute, X
+		0x0A: {execute: (*CPU).asl_acc, addressing: addressingModeAccumulator, cycles: 2}, // ASL Accumulator
+		0x06: {execute: (*CPU).asl_zp, addressing: addressingModeZeroPage, cycles: 5},     // ASL Zero Page
+		0x16: {execute: (*CPU).asl_zp_x, addressing: addressingModeZeroPageX, cycles: 6},  // ASL Zero Page, X
+		0x0E: {execute: (*CPU).asl_abs, addressing: addressingModeAbsolute, cycles: 6},    // ASL Absolute
+		0x1E: {execute: (*CPU).asl_abs_x, addressing: addressingModeAbsoluteX, cycles: 7}, // ASL Absolute, X
+		0x4A: {execute: (*CPU).lsr_acc, addressing: addressingModeAccumulator, cycles: 2}, // LSR Accumulator
+		0x46: {execute: (*CPU).lsr_zp, addressing: addressingModeZeroPage, cycles: 5},     // LSR Zero Page
+		0x56: {execute: (*CPU).lsr_zp_x, addressing: addressingModeZeroPageX, cycles: 6},  // LSR Zero Page, X
+		0x4E: {execute: (*CPU).lsr_abs, addressing: addressingModeAbsolute, cycles: 6},    // LSR Absolute
+		0x5E: {execute: (*CPU).lsr_abs_x, addressing: addressingModeAbsoluteX, cycles: 7}, // LSR Absolute, X
+		0x2A: {execute: (*CPU).rol_acc, addressing: addressingModeAccumulator, cycles: 2}, // ROL Accumulator
+		0x26: {execute: (*CPU).rol_zp, addressing: addressingModeZeroPage, cycles: 5},     // ROL Zero Page
+		0x36: {execute: (*CPU).rol_zp_x, addressing: addressingModeZeroPageX, cycles: 6},  // ROL Zero Page, X
+		0x2E: {execute: (*CPU).rol_abs, addressing: addressingModeAbsolute, cycles: 6},    // ROL Absolute
+		0x3E: {execute: (*CPU).rol_abs_x, addressing: addressingModeAbsoluteX, cycles: 7}, // ROL Absolute, X
+		0x6A: {execute: (*CPU).ror_acc, addressing: addressingModeAccumulator, cycles: 2}, // ROR Accumulator
+		0x66: {execute: (*CPU).ror_zp, addressing: addressingModeZeroPage, cycles: 5},     // ROR Zero Page
+		0x76: {execute: (*CPU).ror_zp_x, addressing: addressingModeZeroPageX, cycles: 6},  // ROR Zero Page, X
+		0x6E: {execute: (*CPU).ror_abs, addressing: addressingModeAbsolute, cycles: 6},    // ROR Absolute
+		0x7E: {execute: (*CPU).ror_abs_x, addressing: addressingModeAbsoluteX, cycles: 7}, // ROR Absolute, X
 
 		// Jumps & Calls
 		0x4C: {execute: (*CPU).jmp_abs, addressing: addressingModeAbsolute, cycles: 3}, // JMP Absolute
@@ -158,14 +158,14 @@ var (
 		0x60: {execute: (*CPU).rts, addressing: addressingModeImplied, cycles: 6},      // RTS - Return from Subroutine
 
 		// Branches
-		0x90: {}, // BCC - Branch if Carry Clear
-		0xB0: {}, // BCS - Branch if Carry Set
-		0xF0: {}, // BEQ - Branch if Equal
-		0x30: {}, // BMI - Branch if Minus
-		0xD0: {}, // BNE - Branch if Not Equal
-		0x10: {}, // BPL - Branch if Positive
-		0x50: {}, // BVC - Branch if Overflow Clear
-		0x70: {}, // BVS - Branch if Overflow Set
+		0x90: {execute: (*CPU).bcc, addressing: addressingModeRelative, cycles: 2}, // BCC - Branch if Carry Clear
+		0xB0: {execute: (*CPU).bcs, addressing: addressingModeRelative, cycles: 2}, // BCS - Branch if Carry Set
+		0xF0: {execute: (*CPU).beq, addressing: addressingModeRelative, cycles: 2}, // BEQ - Branch if Equal
+		0x30: {execute: (*CPU).bmi, addressing: addressingModeRelative, cycles: 2}, // BMI - Branch if Minus
+		0xD0: {execute: (*CPU).bne, addressing: addressingModeRelative, cycles: 2}, // BNE - Branch if Not Equal
+		0x10: {execute: (*CPU).bpl, addressing: addressingModeRelative, cycles: 2}, // BPL - Branch if Positive
+		0x50: {execute: (*CPU).bvc, addressing: addressingModeRelative, cycles: 2}, // BVC - Branch if Overflow Clear
+		0x70: {execute: (*CPU).bvs, addressing: addressingModeRelative, cycles: 2}, // BVS - Branch if Overflow Set
 
 		// Status Flag
 		0x18: {execute: (*CPU).clc, addressing: addressingModeImplied, cycles: 2}, // CLC - Clear Carry Flag
@@ -177,8 +177,8 @@ var (
 		0x78: {execute: (*CPU).sei, addressing: addressingModeImplied, cycles: 2}, // SEI - Set Interrupt Disable
 
 		// System Functions
-		0x00: {},                                                                  // BRK - Force Interrupt
+		0x00: {execute: (*CPU).brk, addressing: addressingModeImplied, cycles: 7}, // BRK - Force Interrupt
 		0xEA: {execute: (*CPU).nop, addressing: addressingModeImplied, cycles: 2}, // NOP - No Operation
-		0x40: {},                                                                  // RTI - Return from Interrupt
+		0x40: {execute: (*CPU).rti, addressing: addressingModeImplied, cycles: 6}, // RTI - Return from Interrupt
 	}
 )

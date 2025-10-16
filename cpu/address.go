@@ -23,7 +23,8 @@ func (cpu *CPU) fetchOperands(mode AddressingMode) ([]uint8, int) {
 
 	switch mode {
 	case addressingModeImmediate, addressingModeZeroPage, addressingModeZeroPageX,
-		addressingModeZeroPageY, addressingModeIndexedIndirect, addressingModeIndirectIndexed:
+		addressingModeZeroPageY, addressingModeIndexedIndirect, addressingModeIndirectIndexed,
+		addressingModeRelative:
 		op := cpu.fetch()
 		return []uint8{op}, additionalCycles
 	case addressingModeAbsolute, addressingModeIndirect:

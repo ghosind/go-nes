@@ -61,6 +61,10 @@ func (ps ProcessorStatus) getDecimal() bool {
 	return ps.get(psFlagDecimal)
 }
 
+func (ps *ProcessorStatus) setUnused(value bool) {
+	ps.set(psFlagUnused, value)
+}
+
 func (ps *ProcessorStatus) setBreak(value bool) {
 	ps.set(psFlagBreak, value)
 }
