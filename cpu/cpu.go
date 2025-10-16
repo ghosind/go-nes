@@ -1,19 +1,21 @@
 package cpu
 
+import "github.com/ghosind/go-nes/memory"
+
 type CPU struct {
-	pc  uint16           // Program Counter
-	sp  uint8            // Stack Pointer
-	a   uint8            // Accumulator
-	x   uint8            // X Register
-	y   uint8            // Y Register
-	ps  *ProcessorStatus // Processor Status
-	mem *Memory          // Memory
+	pc  uint16            // Program Counter
+	sp  uint8             // Stack Pointer
+	a   uint8             // Accumulator
+	x   uint8             // X Register
+	y   uint8             // Y Register
+	ps  *ProcessorStatus  // Processor Status
+	mem *memory.MemoryMap // Memory Bus
 }
 
-func NewCPU() *CPU {
+func NewCPU(bus *memory.MemoryMap) *CPU {
 	cpu := new(CPU)
 	cpu.ps = new(ProcessorStatus)
-	cpu.mem = new(Memory)
+	cpu.mem = bus
 	return cpu
 }
 

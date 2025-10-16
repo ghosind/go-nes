@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/ghosind/go-assert"
+	"github.com/ghosind/go-nes/memory"
 )
 
 type instructionTestVector struct {
@@ -40,16 +41,16 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 	a.Helper()
 
 	// Create a new CPU instance
-	cpu := NewCPU()
+	cpu := NewCPU(new(memory.MemoryMap))
 
 	// Load initial memory state
 	for addr, value := range vector.memory {
-		cpu.mem[addr] = value
+		cpu.mem.Write(addr, value)
 	}
 
 	// Set the reset vector to point to 0x8000
-	cpu.mem[0xFFFC] = 0x00
-	cpu.mem[0xFFFD] = 0x80
+	cpu.mem.Write(0xFFFC, 0x00)
+	cpu.mem.Write(0xFFFD, 0x80)
 
 	// Reset the CPU to initialize PC and other registers
 	cpu.Reset()
@@ -79,9 +80,10 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 			"%s: expected PS flags %08b, got %08b", vector.name, expected, actual)
 	}
 	for addr, value := range vector.expectedMem {
-		a.EqualNow(cpu.mem[addr], value,
+		actual := cpu.mem.Read(addr)
+		a.EqualNow(actual, value,
 			"%s: expected memory at 0x%04X to be 0x%02X, got 0x%02X",
-			vector.name, addr, value, cpu.mem[addr])
+			vector.name, addr, value, actual)
 	}
 
 	// Validate CPU registers if expected values are provided
