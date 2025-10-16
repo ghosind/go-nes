@@ -20,7 +20,7 @@ type instructionTestVector struct {
 	ps     ProcessorStatus
 
 	// expected CPU state after instruction execution
-	cycles      int
+	cycles      uint64
 	psMask      ProcessorStatus
 	expectedPS  ProcessorStatus
 	expectedMem map[uint16]uint8
