@@ -5,6 +5,11 @@ type MemoryMap struct {
 	ram RAM
 }
 
+func NewMemoryMap() *MemoryMap {
+	mmap := new(MemoryMap)
+	return mmap
+}
+
 func (m *MemoryMap) Read(addr uint16) uint8 {
 	if addr < 0x2000 {
 		return m.ram.Read(addr)

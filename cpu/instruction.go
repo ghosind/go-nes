@@ -3,7 +3,7 @@ package cpu
 type cpuInstruction struct {
 	execute    func(*CPU, ...uint8)
 	addressing AddressingMode
-	cycles     int
+	cycles     uint64
 }
 
 var (

@@ -28,7 +28,7 @@ func (cpu *CPU) Reset() {
 	*cpu.ps = psFlagUnused | psFlagInterrupt // Set unused flag to 1 and interrupt disable to 1
 }
 
-func (cpu *CPU) Step() int {
+func (cpu *CPU) Step() uint64 {
 	// Fetch opcode
 	opcode := cpu.fetch()
 

@@ -18,8 +18,8 @@ const (
 	addressingModeRelative
 )
 
-func (cpu *CPU) fetchOperands(mode AddressingMode) ([]uint8, int) {
-	additionalCycles := 0
+func (cpu *CPU) fetchOperands(mode AddressingMode) ([]uint8, uint64) {
+	additionalCycles := uint64(0)
 
 	switch mode {
 	case addressingModeImmediate, addressingModeZeroPage, addressingModeZeroPageX,
