@@ -12,8 +12,8 @@ func TestMemoryMap_Read(t *testing.T) {
 	mmap := new(MemoryMap)
 
 	val := uint8(0x42)
-	mmap.Write(0x8000, val)
-	a.Equal(val, mmap.Read(0x8000))
+	mmap.Write(0x1000, val)
+	a.Equal(val, mmap.Read(0x1000))
 }
 
 func TestMemoryMap_ReadZeroPage(t *testing.T) {
@@ -32,8 +32,8 @@ func TestMemoryMap_ReadAbs(t *testing.T) {
 	mmap := new(MemoryMap)
 
 	val := uint8(0x42)
-	mmap.Write(0x8000, val)
-	a.Equal(val, mmap.ReadAbs(0x80, 0x00))
+	mmap.Write(0x1000, val)
+	a.Equal(val, mmap.ReadAbs(0x10, 0x00))
 }
 
 func TestMemoryMap_ReadAbsShift(t *testing.T) {
@@ -42,8 +42,8 @@ func TestMemoryMap_ReadAbsShift(t *testing.T) {
 	mmap := new(MemoryMap)
 
 	val := uint8(0x42)
-	mmap.Write(0x8005, val)
-	a.Equal(val, mmap.ReadAbsShift(0x80, 0x00, 0x05))
+	mmap.Write(0x1005, val)
+	a.Equal(val, mmap.ReadAbsShift(0x10, 0x00, 0x05))
 }
 
 func TestMemoryMap_ReadIndexedIndirect(t *testing.T) {
@@ -76,8 +76,8 @@ func TestMemoryMap_Write(t *testing.T) {
 	mmap := new(MemoryMap)
 
 	val := uint8(0x42)
-	mmap.Write(0x8000, val)
-	a.Equal(val, mmap.Read(0x8000))
+	mmap.Write(0x1000, val)
+	a.Equal(val, mmap.Read(0x1000))
 }
 
 func TestMemoryMap_WriteZeroPage(t *testing.T) {
@@ -96,8 +96,8 @@ func TestMemoryMap_WriteAbs(t *testing.T) {
 	mmap := new(MemoryMap)
 
 	val := uint8(0x42)
-	mmap.WriteAbs(0x80, 0x00, val)
-	a.Equal(val, mmap.Read(0x8000))
+	mmap.WriteAbs(0x10, 0x00, val)
+	a.Equal(val, mmap.Read(0x1000))
 }
 
 func TestMemoryMap_WriteAbsShift(t *testing.T) {
@@ -106,8 +106,8 @@ func TestMemoryMap_WriteAbsShift(t *testing.T) {
 	mmap := new(MemoryMap)
 
 	val := uint8(0x42)
-	mmap.WriteAbsShift(0x80, 0x00, 0x05, val)
-	a.Equal(val, mmap.Read(0x8005))
+	mmap.WriteAbsShift(0x10, 0x00, 0x05, val)
+	a.Equal(val, mmap.Read(0x1005))
 }
 
 func TestMemoryMap_WriteIndexedIndirect(t *testing.T) {

@@ -5,6 +5,7 @@ import (
 
 	"github.com/ghosind/go-assert"
 	"github.com/ghosind/go-nes/memory"
+	"github.com/ghosind/go-nes/rom"
 )
 
 type instructionTestVector struct {
@@ -31,6 +32,18 @@ type instructionTestVector struct {
 	expectedPC  *uint16
 }
 
+type testMapper struct {
+	rom [65536]byte
+}
+
+func (m *testMapper) CPURead(addr uint16) uint8 { return m.rom[addr] }
+
+func (m *testMapper) CPUWrite(addr uint16, value uint8) { m.rom[addr] = value }
+
+func (m *testMapper) PPURead(addr uint16) uint8 { return 0 }
+
+func (m *testMapper) PPUWrite(addr uint16, value uint8) {}
+
 func pointer[T any](v T) *T {
 	return &v
 }
@@ -41,7 +54,9 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 	a.Helper()
 
 	// Create a new CPU instance
-	cpu := New(new(memory.MemoryMap))
+	cpu := New(memory.NewMemoryMap(&rom.ROM{
+		Mapper: new(testMapper),
+	}))
 
 	// Load initial memory state
 	for addr, value := range vector.memory {

@@ -33,8 +33,8 @@ func NewMemoryMap(rom *rom.ROM) *MemoryMap {
 func (m *MemoryMap) Read(addr uint16) uint8 {
 	if addr < 0x2000 {
 		return m.ram.Read(addr)
-		// } else if addr >= 0x8000 {
-		// return m.rom.CPURead(addr)
+	} else if addr >= 0x6000 {
+		return m.rom.CPURead(addr)
 	}
 	return m.mem[addr]
 }
@@ -69,8 +69,8 @@ func (m *MemoryMap) ReadIndirectIndexed(addr, shift uint8) uint8 {
 func (m *MemoryMap) Write(addr uint16, value uint8) {
 	if addr < 0x2000 {
 		m.ram.Write(addr, value)
-		// } else if addr >= 0x8000 {
-		// 	m.rom.CPUWrite(addr, value)
+	} else if addr >= 0x6000 {
+		m.rom.CPUWrite(addr, value)
 	} else {
 		m.mem[addr] = value
 	}

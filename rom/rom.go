@@ -1,46 +1,67 @@
 package rom
 
 import (
-	"errors"
-
-	"github.com/ghosind/go-nes/mapper"
-)
-
-var (
-	ErrInvalidROM = errors.New("invalid ROM")
+	"github.com/ghosind/go-nes/rom/ines"
+	"github.com/ghosind/go-nes/rom/mapper"
 )
 
 type ROM struct {
-	mapper mapper.Mapper
+	Mapper mapper.Mapper
 }
 
 func New(data []byte) (*ROM, error) {
 	rom := new(ROM)
 
-	if len(data) < 16 {
-		return nil, ErrInvalidROM
-	}
-
-	// Check for "NES" file signature
-	if data[0] != 'N' || data[1] != 'E' || data[2] != 'S' || data[3] != 0x1A {
-		return nil, ErrInvalidROM
+	if err := rom.parseROM(data); err != nil {
+		return nil, err
 	}
 
 	return rom, nil
 }
 
+func (r *ROM) parseROM(data []byte) error {
+	header, err := r.parseINesHeader(data)
+	if err != nil {
+		return err
+	}
+
+	mapper := mapper.NewMapper(header, data)
+	if mapper == nil {
+		return ines.ErrUnsupportedMapper
+	}
+	r.Mapper = mapper
+
+	return nil
+}
+
+func (r *ROM) parseINesHeader(data []byte) (*ines.INESHeader, error) {
+	if len(data) < 16 {
+		return nil, ines.ErrInvalidROM
+	}
+
+	// Check for "NES" file signature
+	if string(data[0:4]) != "NES\x1A" {
+		return nil, ines.ErrInvalidROM
+	}
+
+	header := new(ines.INESHeader)
+	header.Parse(data[0:16])
+
+	return header, nil
+}
+
 func (r *ROM) CPURead(addr uint16) uint8 {
-	return r.mapper.CPURead(addr)
+	return r.Mapper.CPURead(addr)
 }
 
 func (r *ROM) CPUWrite(addr uint16, value uint8) {
-	r.mapper.CPUWrite(addr, value)
+	r.Mapper.CPUWrite(addr, value)
 }
 
 func (r *ROM) PPURead(addr uint16) uint8 {
-	return r.mapper.PPURead(addr)
+	return r.Mapper.PPURead(addr)
 }
 
 func (r *ROM) PPUWrite(addr uint16, value uint8) {
-	r.mapper.PPUWrite(addr, value)
+	r.Mapper.PPUWrite(addr, value)
 }

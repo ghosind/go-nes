@@ -13,7 +13,7 @@ go-nes is a focused, well-tested Go library that implements the core internals o
 <!-- - Basic PPU implementation for rendering graphics (background and sprites). -->
 <!-- - APU stubs for audio processing (full audio implementation is a work in progress). -->
 <!-- - Memory mapping that supports various NES mappers (NROM, MMC1, etc.). -->
-<!-- - Loading and parsing of iNES format ROM files. -->
+- Loading and parsing of iNES format ROM files.
 
 ## Components
 
@@ -23,7 +23,8 @@ go-nes is a focused, well-tested Go library that implements the core internals o
 - `apu`: Manages the NES Audio Processing Unit (APU) for sound generation.
 - `memory`: Emulates the NES memory map, including RAM, ROM, and I/O registers.
 - `rom`: Loads and parses NES ROM files in iNES format.
-- `mapper`: Supports various NES cartridge mappers for memory banking.
+- `rom/ines`: Loads and parses iNES header.
+- `rom/mapper`: Supports various NES cartridge mappers for memory banking.
 - more components to be added...
 
 ## Reference
