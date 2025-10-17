@@ -3,7 +3,7 @@ package cpu
 func (cpu *CPU) jmp_abs(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.pc = uint16(high)<<8 | uint16(low)
+	cpu.PC = uint16(high)<<8 | uint16(low)
 }
 
 func (cpu *CPU) jmp_ind(operands ...uint8) {
@@ -21,7 +21,7 @@ func (cpu *CPU) jmp_ind(operands ...uint8) {
 		targetHigh = cpu.mem.Read(addr + 1)
 	}
 
-	cpu.pc = uint16(targetHigh)<<8 | uint16(targetLow)
+	cpu.PC = uint16(targetHigh)<<8 | uint16(targetLow)
 }
 
 func (cpu *CPU) jsr(operands ...uint8) {
@@ -29,12 +29,12 @@ func (cpu *CPU) jsr(operands ...uint8) {
 	high := operands[1]
 
 	// Push (PC - 1) onto the stack
-	returnAddr := cpu.pc - 1
+	returnAddr := cpu.PC - 1
 	cpu.pushStack(uint8((returnAddr >> 8) & 0xFF)) // High byte
 	cpu.pushStack(uint8(returnAddr & 0xFF))        // Low byte
 
 	// Set PC to target address
-	cpu.pc = uint16(high)<<8 | uint16(low)
+	cpu.PC = uint16(high)<<8 | uint16(low)
 }
 
 func (cpu *CPU) rts(operands ...uint8) {
@@ -42,6 +42,6 @@ func (cpu *CPU) rts(operands ...uint8) {
 	low := cpu.popStack()
 	high := cpu.popStack()
 
-	cpu.pc = (uint16(high) << 8) | uint16(low)
-	cpu.pc++ // Increment PC to point to the next instruction
+	cpu.PC = (uint16(high) << 8) | uint16(low)
+	cpu.PC++ // Increment PC to point to the next instruction
 }

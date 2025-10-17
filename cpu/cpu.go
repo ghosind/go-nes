@@ -1,34 +1,45 @@
 package cpu
 
-import "github.com/ghosind/go-nes/memory"
+import (
+	"github.com/ghosind/go-nes/logger"
+	"github.com/ghosind/go-nes/memory"
+)
 
 type CPU struct {
-	pc  uint16            // Program Counter
-	sp  uint8             // Stack Pointer
-	a   uint8             // Accumulator
-	x   uint8             // X Register
-	y   uint8             // Y Register
-	ps  *ProcessorStatus  // Processor Status
-	mem *memory.MemoryMap // Memory Bus
+	PC     uint16            // Program Counter
+	SP     uint8             // Stack Pointer
+	A      uint8             // Accumulator
+	X      uint8             // X Register
+	Y      uint8             // Y Register
+	PS     *ProcessorStatus  // Processor Status
+	mem    *memory.MemoryMap // Memory Bus
+	Cycles uint64
+
+	EnableTrace bool
+	Logger      logger.Logger
 }
 
 func New(bus *memory.MemoryMap) *CPU {
 	cpu := new(CPU)
-	cpu.ps = new(ProcessorStatus)
+	cpu.PS = new(ProcessorStatus)
 	cpu.mem = bus
 	return cpu
 }
 
 func (cpu *CPU) Reset() {
-	cpu.pc = uint16(cpu.mem.Read(0xFFFD))<<8 | uint16(cpu.mem.Read(0xFFFC))
-	cpu.sp = 0xFD
-	cpu.a = 0
-	cpu.x = 0
-	cpu.y = 0
-	*cpu.ps = psFlagUnused | psFlagInterrupt // Set unused flag to 1 and interrupt disable to 1
+	cpu.PC = uint16(cpu.mem.Read(0xFFFD))<<8 | uint16(cpu.mem.Read(0xFFFC))
+	cpu.SP = 0xFD
+	cpu.A = 0
+	cpu.X = 0
+	cpu.Y = 0
+	*cpu.PS = psFlagUnused | psFlagInterrupt // Set unused flag to 1 and interrupt disable to 1
+	cpu.Cycles = 0
 }
 
 func (cpu *CPU) Step() uint64 {
+	// record current pc
+	pc := cpu.PC
+
 	// Fetch opcode
 	opcode := cpu.fetch()
 
@@ -41,17 +52,25 @@ func (cpu *CPU) Step() uint64 {
 
 	// Fetch operands
 	operands, addCycles := cpu.fetchOperands(instruction.addressing)
+
+	if cpu.EnableTrace {
+		cpu.trace(pc, opcode, instruction, operands...)
+	}
+
 	// hardcode cycles to simulate the real cpu cycles
 	cycles := instruction.cycles + addCycles
 
 	// Execute instruction
 	instruction.execute(cpu, operands...)
 
+	// Update CPU cycles
+	cpu.Cycles += cycles
+
 	return cycles
 }
 
 func (cpu *CPU) fetch() uint8 {
-	value := cpu.mem.Read(cpu.pc)
-	cpu.pc++
+	value := cpu.mem.Read(cpu.PC)
+	cpu.PC++
 	return value
 }

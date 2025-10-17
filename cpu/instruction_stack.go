@@ -1,33 +1,33 @@
 package cpu
 
 func (cpu *CPU) tsx(operands ...uint8) {
-	cpu.x = cpu.sp
-	cpu.ps.setZeroNeg(cpu.x)
+	cpu.X = cpu.SP
+	cpu.PS.setZeroNeg(cpu.X)
 }
 
 func (cpu *CPU) txs(operands ...uint8) {
-	cpu.sp = cpu.x
+	cpu.SP = cpu.X
 	// Note: TXS does not affect any flags
 }
 
 func (cpu *CPU) pha(operands ...uint8) {
-	cpu.pushStack(cpu.a)
+	cpu.pushStack(cpu.A)
 }
 
 func (cpu *CPU) php(operands ...uint8) {
 	// When pushing the status register onto the stack, bits 4 and 5 are set to 1
-	status := uint8(*cpu.ps) | 0x30
+	status := uint8(*cpu.PS) | 0x30
 	cpu.pushStack(status)
 }
 
 func (cpu *CPU) pla(operands ...uint8) {
-	cpu.a = cpu.popStack()
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = cpu.popStack()
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) plp(operands ...uint8) {
 	status := cpu.popStack()
 	// Preserve bits 4 and 5 as unused (always set to 1)
 	status |= 0x30
-	*cpu.ps = ProcessorStatus(status)
+	*cpu.PS = ProcessorStatus(status)
 }

@@ -1,6 +1,8 @@
 package mapper
 
-import "github.com/ghosind/go-nes/rom/ines"
+import (
+	"github.com/ghosind/go-nes/rom/ines"
+)
 
 type mapper0 struct {
 	mapper

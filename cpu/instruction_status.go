@@ -1,29 +1,29 @@
 package cpu
 
 func (cpu *CPU) clc(operands ...uint8) {
-	cpu.ps.setCarry(false)
+	cpu.PS.setCarry(false)
 }
 
 func (cpu *CPU) cld(operands ...uint8) {
-	cpu.ps.setDecimal(false)
+	cpu.PS.setDecimal(false)
 }
 
 func (cpu *CPU) cli(operands ...uint8) {
-	cpu.ps.setInterrupt(false)
+	cpu.PS.setInterrupt(false)
 }
 
 func (cpu *CPU) clv(operands ...uint8) {
-	cpu.ps.setOverflow(false)
+	cpu.PS.setOverflow(false)
 }
 
 func (cpu *CPU) sec(operands ...uint8) {
-	cpu.ps.setCarry(true)
+	cpu.PS.setCarry(true)
 }
 
 func (cpu *CPU) sed(operands ...uint8) {
-	cpu.ps.setDecimal(true)
+	cpu.PS.setDecimal(true)
 }
 
 func (cpu *CPU) sei(operands ...uint8) {
-	cpu.ps.setInterrupt(true)
+	cpu.PS.setInterrupt(true)
 }

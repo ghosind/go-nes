@@ -1,183 +1,183 @@
 package cpu
 
 func (cpu *CPU) lda_imm(operands ...uint8) {
-	cpu.a = operands[0]
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = operands[0]
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) lda_zp(operands ...uint8) {
 	addr := operands[0]
-	cpu.a = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = cpu.mem.ReadZeroPage(addr)
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) lda_zp_x(operands ...uint8) {
-	addr := operands[0] + cpu.x
-	cpu.a = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.a)
+	addr := operands[0] + cpu.X
+	cpu.A = cpu.mem.ReadZeroPage(addr)
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) lda_abs(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.a = cpu.mem.ReadAbs(high, low)
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = cpu.mem.ReadAbs(high, low)
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) lda_abs_x(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.a = cpu.mem.ReadAbsShift(high, low, cpu.x)
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = cpu.mem.ReadAbsShift(high, low, cpu.X)
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) lda_abs_y(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.a = cpu.mem.ReadAbsShift(high, low, cpu.y)
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = cpu.mem.ReadAbsShift(high, low, cpu.Y)
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) lda_ind_x(operands ...uint8) {
 	addr := operands[0]
-	cpu.a = cpu.mem.ReadIndexedIndirect(addr, cpu.x)
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = cpu.mem.ReadIndexedIndirect(addr, cpu.X)
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) lda_ind_y(operands ...uint8) {
 	addr := operands[0]
-	cpu.a = cpu.mem.ReadIndirectIndexed(addr, cpu.y)
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = cpu.mem.ReadIndirectIndexed(addr, cpu.Y)
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) ldx_imm(operands ...uint8) {
-	cpu.x = operands[0]
-	cpu.ps.setZeroNeg(cpu.x)
+	cpu.X = operands[0]
+	cpu.PS.setZeroNeg(cpu.X)
 }
 
 func (cpu *CPU) ldx_zp(operands ...uint8) {
 	addr := operands[0]
-	cpu.x = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.x)
+	cpu.X = cpu.mem.ReadZeroPage(addr)
+	cpu.PS.setZeroNeg(cpu.X)
 }
 
 func (cpu *CPU) ldx_zp_y(operands ...uint8) {
-	addr := operands[0] + cpu.y
-	cpu.x = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.x)
+	addr := operands[0] + cpu.Y
+	cpu.X = cpu.mem.ReadZeroPage(addr)
+	cpu.PS.setZeroNeg(cpu.X)
 }
 
 func (cpu *CPU) ldx_abs(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.x = cpu.mem.ReadAbs(high, low)
-	cpu.ps.setZeroNeg(cpu.x)
+	cpu.X = cpu.mem.ReadAbs(high, low)
+	cpu.PS.setZeroNeg(cpu.X)
 }
 
 func (cpu *CPU) ldx_abs_y(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.x = cpu.mem.ReadAbsShift(high, low, cpu.y)
-	cpu.ps.setZeroNeg(cpu.x)
+	cpu.X = cpu.mem.ReadAbsShift(high, low, cpu.Y)
+	cpu.PS.setZeroNeg(cpu.X)
 }
 
 func (cpu *CPU) ldy_imm(operands ...uint8) {
-	cpu.y = operands[0]
-	cpu.ps.setZeroNeg(cpu.y)
+	cpu.Y = operands[0]
+	cpu.PS.setZeroNeg(cpu.Y)
 }
 
 func (cpu *CPU) ldy_zp(operands ...uint8) {
 	addr := operands[0]
-	cpu.y = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.y)
+	cpu.Y = cpu.mem.ReadZeroPage(addr)
+	cpu.PS.setZeroNeg(cpu.Y)
 }
 
 func (cpu *CPU) ldy_zp_x(operands ...uint8) {
-	addr := operands[0] + cpu.x
-	cpu.y = cpu.mem.ReadZeroPage(addr)
-	cpu.ps.setZeroNeg(cpu.y)
+	addr := operands[0] + cpu.X
+	cpu.Y = cpu.mem.ReadZeroPage(addr)
+	cpu.PS.setZeroNeg(cpu.Y)
 }
 
 func (cpu *CPU) ldy_abs(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.y = cpu.mem.ReadAbs(high, low)
-	cpu.ps.setZeroNeg(cpu.y)
+	cpu.Y = cpu.mem.ReadAbs(high, low)
+	cpu.PS.setZeroNeg(cpu.Y)
 }
 
 func (cpu *CPU) ldy_abs_x(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.y = cpu.mem.ReadAbsShift(high, low, cpu.x)
-	cpu.ps.setZeroNeg(cpu.y)
+	cpu.Y = cpu.mem.ReadAbsShift(high, low, cpu.X)
+	cpu.PS.setZeroNeg(cpu.Y)
 }
 
 func (cpu *CPU) sta_zp(operands ...uint8) {
 	addr := operands[0]
-	cpu.mem.WriteZeroPage(addr, cpu.a)
+	cpu.mem.WriteZeroPage(addr, cpu.A)
 }
 
 func (cpu *CPU) sta_zp_x(operands ...uint8) {
-	addr := operands[0] + cpu.x
-	cpu.mem.WriteZeroPage(addr, cpu.a)
+	addr := operands[0] + cpu.X
+	cpu.mem.WriteZeroPage(addr, cpu.A)
 }
 
 func (cpu *CPU) sta_abs(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.mem.WriteAbs(high, low, cpu.a)
+	cpu.mem.WriteAbs(high, low, cpu.A)
 }
 
 func (cpu *CPU) sta_abs_x(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.mem.WriteAbsShift(high, low, cpu.x, cpu.a)
+	cpu.mem.WriteAbsShift(high, low, cpu.X, cpu.A)
 }
 
 func (cpu *CPU) sta_abs_y(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.mem.WriteAbsShift(high, low, cpu.y, cpu.a)
+	cpu.mem.WriteAbsShift(high, low, cpu.Y, cpu.A)
 }
 
 func (cpu *CPU) sta_ind_x(operands ...uint8) {
 	addr := operands[0]
-	cpu.mem.WriteIndexedIndirect(addr, cpu.x, cpu.a)
+	cpu.mem.WriteIndexedIndirect(addr, cpu.X, cpu.A)
 }
 
 func (cpu *CPU) sta_ind_y(operands ...uint8) {
 	addr := operands[0]
-	cpu.mem.WriteIndirectIndexed(addr, cpu.y, cpu.a)
+	cpu.mem.WriteIndirectIndexed(addr, cpu.Y, cpu.A)
 }
 
 func (cpu *CPU) stx_zp(operands ...uint8) {
 	addr := operands[0]
-	cpu.mem.WriteZeroPage(addr, cpu.x)
+	cpu.mem.WriteZeroPage(addr, cpu.X)
 }
 
 func (cpu *CPU) stx_zp_y(operands ...uint8) {
-	addr := operands[0] + cpu.y
-	cpu.mem.WriteZeroPage(addr, cpu.x)
+	addr := operands[0] + cpu.Y
+	cpu.mem.WriteZeroPage(addr, cpu.X)
 }
 
 func (cpu *CPU) stx_abs(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.mem.WriteAbs(high, low, cpu.x)
+	cpu.mem.WriteAbs(high, low, cpu.X)
 }
 
 func (cpu *CPU) sty_zp(operands ...uint8) {
 	addr := operands[0]
-	cpu.mem.WriteZeroPage(addr, cpu.y)
+	cpu.mem.WriteZeroPage(addr, cpu.Y)
 }
 
 func (cpu *CPU) sty_zp_x(operands ...uint8) {
-	addr := operands[0] + cpu.x
-	cpu.mem.WriteZeroPage(addr, cpu.y)
+	addr := operands[0] + cpu.X
+	cpu.mem.WriteZeroPage(addr, cpu.Y)
 }
 
 func (cpu *CPU) sty_abs(operands ...uint8) {
 	low := operands[0]
 	high := operands[1]
-	cpu.mem.WriteAbs(high, low, cpu.y)
+	cpu.mem.WriteAbs(high, low, cpu.Y)
 }

@@ -71,13 +71,13 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 	cpu.Reset()
 
 	// Set initial CPU registers
-	cpu.a = vector.a
-	cpu.x = vector.x
-	cpu.y = vector.y
-	*cpu.ps = vector.ps
+	cpu.A = vector.a
+	cpu.X = vector.x
+	cpu.Y = vector.y
+	*cpu.PS = vector.ps
 
 	if vector.sp != nil {
-		cpu.sp = *vector.sp
+		cpu.SP = *vector.sp
 	}
 
 	// Execute the instruction in 0x8000
@@ -89,7 +89,7 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 			"%s: expected %d cycles, got %d", vector.name, vector.cycles, cycles)
 	}
 	if vector.psMask != 0 {
-		actual := *cpu.ps & vector.psMask
+		actual := *cpu.PS & vector.psMask
 		expected := vector.expectedPS & vector.psMask
 		a.EqualNow(actual, expected,
 			"%s: expected PS flags %08b, got %08b", vector.name, expected, actual)
@@ -103,19 +103,19 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 
 	// Validate CPU registers if expected values are provided
 	if vector.expectedA != nil {
-		a.EqualNow(cpu.a, *vector.expectedA, "%s: expected A to be 0x%02X, got 0x%02X", vector.name, *vector.expectedA, cpu.a)
+		a.EqualNow(cpu.A, *vector.expectedA, "%s: expected A to be 0x%02X, got 0x%02X", vector.name, *vector.expectedA, cpu.A)
 	}
 	if vector.expectedX != nil {
-		a.EqualNow(cpu.x, *vector.expectedX, "%s: expected X to be 0x%02X, got 0x%02X", vector.name, *vector.expectedX, cpu.x)
+		a.EqualNow(cpu.X, *vector.expectedX, "%s: expected X to be 0x%02X, got 0x%02X", vector.name, *vector.expectedX, cpu.X)
 	}
 	if vector.expectedY != nil {
-		a.EqualNow(cpu.y, *vector.expectedY, "%s: expected Y to be 0x%02X, got 0x%02X", vector.name, *vector.expectedY, cpu.y)
+		a.EqualNow(cpu.Y, *vector.expectedY, "%s: expected Y to be 0x%02X, got 0x%02X", vector.name, *vector.expectedY, cpu.Y)
 	}
 	if vector.expectedSP != nil {
-		a.EqualNow(cpu.sp, *vector.expectedSP, "%s: expected SP to be 0x%02X, got 0x%02X", vector.name, *vector.expectedSP, cpu.sp)
+		a.EqualNow(cpu.SP, *vector.expectedSP, "%s: expected SP to be 0x%02X, got 0x%02X", vector.name, *vector.expectedSP, cpu.SP)
 	}
 	if vector.expectedPC != nil {
-		a.EqualNow(cpu.pc, *vector.expectedPC, "%s: expected PC to be 0x%04X, got 0x%04X", vector.name, *vector.expectedPC, cpu.pc)
+		a.EqualNow(cpu.PC, *vector.expectedPC, "%s: expected PC to be 0x%04X, got 0x%04X", vector.name, *vector.expectedPC, cpu.PC)
 	}
 
 	// Return the CPU instance to allow further assertions if needed

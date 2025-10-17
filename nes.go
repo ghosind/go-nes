@@ -3,6 +3,7 @@ package nes
 import (
 	"github.com/ghosind/go-nes/apu"
 	"github.com/ghosind/go-nes/cpu"
+	"github.com/ghosind/go-nes/logger"
 	"github.com/ghosind/go-nes/memory"
 	"github.com/ghosind/go-nes/ppu"
 	"github.com/ghosind/go-nes/rom"
@@ -14,6 +15,9 @@ type NES struct {
 	mmap *memory.MemoryMap
 	ppu  *ppu.PPU
 	rom  *rom.ROM
+
+	enableTrace bool
+	logger      logger.Logger
 }
 
 func New(data []byte) (*NES, error) {
@@ -28,6 +32,7 @@ func New(data []byte) (*NES, error) {
 	nes.apu = apu.New()
 	nes.ppu = ppu.New()
 	nes.cpu = cpu.New(nes.mmap)
+	nes.cpu.Reset()
 
 	return nes, nil
 }
@@ -44,4 +49,12 @@ func (n *NES) Step() uint64 {
 	}
 
 	return cycles
+}
+
+func (n *NES) EnableTrace(logger logger.Logger) {
+	n.enableTrace = true
+	n.logger = logger
+
+	n.cpu.EnableTrace = true
+	n.cpu.Logger = logger
 }

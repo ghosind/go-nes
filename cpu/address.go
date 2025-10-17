@@ -34,14 +34,14 @@ func (cpu *CPU) fetchOperands(mode AddressingMode) ([]uint8, uint64) {
 	case addressingModeAbsoluteX:
 		low := cpu.fetch()
 		high := cpu.fetch()
-		if (uint16(low) + uint16(cpu.x)) > 0xFF {
+		if (uint16(low) + uint16(cpu.X)) > 0xFF {
 			additionalCycles = 1
 		}
 		return []uint8{low, high}, additionalCycles
 	case addressingModeAbsoluteY:
 		low := cpu.fetch()
 		high := cpu.fetch()
-		if (uint16(low) + uint16(cpu.y)) > 0xFF {
+		if (uint16(low) + uint16(cpu.Y)) > 0xFF {
 			additionalCycles = 1
 		}
 		return []uint8{low, high}, additionalCycles

@@ -1,21 +1,21 @@
 package cpu
 
 func (cpu *CPU) tax(operands ...uint8) {
-	cpu.x = cpu.a
-	cpu.ps.setZeroNeg(cpu.x)
+	cpu.X = cpu.A
+	cpu.PS.setZeroNeg(cpu.X)
 }
 
 func (cpu *CPU) tay(operands ...uint8) {
-	cpu.y = cpu.a
-	cpu.ps.setZeroNeg(cpu.y)
+	cpu.Y = cpu.A
+	cpu.PS.setZeroNeg(cpu.Y)
 }
 
 func (cpu *CPU) txa(operands ...uint8) {
-	cpu.a = cpu.x
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = cpu.X
+	cpu.PS.setZeroNeg(cpu.A)
 }
 
 func (cpu *CPU) tya(operands ...uint8) {
-	cpu.a = cpu.y
-	cpu.ps.setZeroNeg(cpu.a)
+	cpu.A = cpu.Y
+	cpu.PS.setZeroNeg(cpu.A)
 }
