@@ -12,7 +12,7 @@ type CPU struct {
 	mem *memory.MemoryMap // Memory Bus
 }
 
-func NewCPU(bus *memory.MemoryMap) *CPU {
+func New(bus *memory.MemoryMap) *CPU {
 	cpu := new(CPU)
 	cpu.ps = new(ProcessorStatus)
 	cpu.mem = bus

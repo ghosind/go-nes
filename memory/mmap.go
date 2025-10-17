@@ -1,18 +1,40 @@
 package memory
 
+import "github.com/ghosind/go-nes/rom"
+
+// MemoryMap represents the NES memory map. It includes RAM, ROM, and I/O registers.
+//
+// The NES memory map 64KB address space is divided as follows:
+//
+// 0x0000 - 0x07FF: 2KB internal RAM.
+// 0x0800 - 0x1FFF: Mirrors of 0x0000 - 0x07FF (repeats every 2KB).
+// 0x2000 - 0x2007: PPU registers.
+// 0x2008 - 0x3FFF: Mirrors of 0x2000 - 0x2007 (repeats every 8 bytes).
+// 0x4000 - 0x4017: APU and I/O registers.
+// 0x4018 - 0x401F: APU and I/O functionality that is normally disabled.
+// 0x4020 - 0xFFFF: Cartridge space (PRG ROM, PRG RAM, and mapper registers).
 type MemoryMap struct {
+	// mem is the placeholder for the entire 64KB memory space.
+	// In a complete implementation, this would be divided into RAM, ROM, and I/O registers.
+	// For simplicity, we will use a single array here.
 	mem [65536]uint8
+	// ram represents the 2KB internal RAM of the NES.
 	ram RAM
+	// rom represents the cartridge ROM, which includes PRG ROM and PRG RAM.
+	rom *rom.ROM
 }
 
-func NewMemoryMap() *MemoryMap {
+func NewMemoryMap(rom *rom.ROM) *MemoryMap {
 	mmap := new(MemoryMap)
+	mmap.rom = rom
 	return mmap
 }
 
 func (m *MemoryMap) Read(addr uint16) uint8 {
 	if addr < 0x2000 {
 		return m.ram.Read(addr)
+		// } else if addr >= 0x8000 {
+		// return m.rom.CPURead(addr)
 	}
 	return m.mem[addr]
 }
@@ -47,6 +69,8 @@ func (m *MemoryMap) ReadIndirectIndexed(addr, shift uint8) uint8 {
 func (m *MemoryMap) Write(addr uint16, value uint8) {
 	if addr < 0x2000 {
 		m.ram.Write(addr, value)
+		// } else if addr >= 0x8000 {
+		// 	m.rom.CPUWrite(addr, value)
 	} else {
 		m.mem[addr] = value
 	}

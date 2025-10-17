@@ -41,7 +41,7 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 	a.Helper()
 
 	// Create a new CPU instance
-	cpu := NewCPU(new(memory.MemoryMap))
+	cpu := New(new(memory.MemoryMap))
 
 	// Load initial memory state
 	for addr, value := range vector.memory {
