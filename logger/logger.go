@@ -1,5 +1,5 @@
 package logger
 
 type Logger interface {
-	Println(...any)
+	Printf(string, ...any)
 }
