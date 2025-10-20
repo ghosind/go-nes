@@ -21,7 +21,7 @@ func TestCPU_BCC(t *testing.T) {
 				0x8001: 0x02, // Branch to $8004
 			},
 			ps:         0x00,
-			cycles:     2,
+			cycles:     3,
 			expectedPC: pointer(uint16(0x8004)),
 		},
 	}
@@ -50,7 +50,7 @@ func TestCPU_BCS(t *testing.T) {
 				0x8001: 0x02, // Branch to $8004
 			},
 			ps:         psFlagCarry,
-			cycles:     2,
+			cycles:     3,
 			expectedPC: pointer(uint16(0x8004)),
 		},
 	}
@@ -79,7 +79,7 @@ func TestCPU_BEQ(t *testing.T) {
 				0x8001: 0x02, // Branch to $8004
 			},
 			ps:         psFlagZero,
-			cycles:     2,
+			cycles:     3,
 			expectedPC: pointer(uint16(0x8004)),
 		},
 	}
@@ -108,7 +108,7 @@ func TestCPU_BNE(t *testing.T) {
 				0x8001: 0x02, // Branch to $8004
 			},
 			ps:         0x00,
-			cycles:     2,
+			cycles:     3,
 			expectedPC: pointer(uint16(0x8004)),
 		},
 	}
@@ -137,7 +137,7 @@ func TestCPU_BMI(t *testing.T) {
 				0x8001: 0x02, // Branch to $8004
 			},
 			ps:         psFlagNegative,
-			cycles:     2,
+			cycles:     3,
 			expectedPC: pointer(uint16(0x8004)),
 		},
 	}
@@ -166,7 +166,7 @@ func TestCPU_BPL(t *testing.T) {
 				0x8001: 0x02, // Branch to $8004
 			},
 			ps:         0x00,
-			cycles:     2,
+			cycles:     3,
 			expectedPC: pointer(uint16(0x8004)),
 		},
 	}
@@ -195,7 +195,7 @@ func TestCPU_BVC(t *testing.T) {
 				0x8001: 0x02, // Branch to $8004
 			},
 			ps:         0x00,
-			cycles:     2,
+			cycles:     3,
 			expectedPC: pointer(uint16(0x8004)),
 		},
 	}
@@ -224,7 +224,7 @@ func TestCPU_BVS(t *testing.T) {
 				0x8001: 0x02, // Branch to $8004
 			},
 			ps:         psFlagOverflow,
-			cycles:     2,
+			cycles:     3,
 			expectedPC: pointer(uint16(0x8004)),
 		},
 	}
