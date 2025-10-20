@@ -81,8 +81,8 @@ var (
 		0x19: {opcode: "ORA", execute: (*CPU).ora_abs_y, addressing: addressingModeAbsoluteY, cycles: 4},       // ORA Absolute, Y
 		0x01: {opcode: "ORA", execute: (*CPU).ora_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6}, // ORA (Indirect, X)
 		0x11: {opcode: "ORA", execute: (*CPU).ora_ind_y, addressing: addressingModeIndirectIndexed, cycles: 5}, // ORA (Indirect), Y
-		0x24: {opcode: "ORA", execute: (*CPU).bit_zp, addressing: addressingModeZeroPage, cycles: 3},           // BIT Zero Page
-		0x2C: {opcode: "ORA", execute: (*CPU).bit_abs, addressing: addressingModeAbsolute, cycles: 4},          // BIT Absolute
+		0x24: {opcode: "BIT", execute: (*CPU).bit_zp, addressing: addressingModeZeroPage, cycles: 3},           // BIT Zero Page
+		0x2C: {opcode: "BIT", execute: (*CPU).bit_abs, addressing: addressingModeAbsolute, cycles: 4},          // BIT Absolute
 
 		// Arithmetic
 		0x69: {opcode: "ADC", execute: (*CPU).adc_imm, addressing: addressingModeImmediate, cycles: 2},         // ADC Immediate
