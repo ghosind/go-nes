@@ -4,7 +4,6 @@ func (cpu *CPU) adc(value uint8) uint64 {
 	carry := uint8(0)
 	if cpu.PS.getCarry() {
 		carry = 1
-		return 0
 	}
 
 	tmp := uint16(cpu.A) + uint16(value) + uint16(carry)
@@ -80,7 +79,6 @@ func (cpu *CPU) sbc(value uint8) uint64 {
 	carry := uint8(0)
 	if cpu.PS.getCarry() {
 		carry = 1
-		return 0
 	}
 
 	tmp := uint16(cpu.A) + uint16(^value) + uint16(carry)
