@@ -85,7 +85,7 @@ func (cpu *CPU) sbc(value uint8) uint64 {
 	result := uint8(tmp & 0xFF)
 
 	cpu.PS.setCarry(tmp > 0xFF)
-	cpu.PS.setOverflow((^(cpu.A ^ value) & (cpu.A ^ result) & 0x80) != 0)
+	cpu.PS.setOverflow(((cpu.A ^ result) & ((value ^ 0xFF) ^ result) & 0x80) != 0)
 	cpu.PS.setZeroNeg(result)
 
 	cpu.A = result

@@ -32,8 +32,9 @@ func (cpu *CPU) pla(operands ...uint8) uint64 {
 
 func (cpu *CPU) plp(operands ...uint8) uint64 {
 	status := cpu.popStack()
-	// Preserve bits 4 and 5 as unused (always set to 1)
-	status |= 0x30
+	// Bit 5 is always set to 1, and bit 4 is ignored
+	// P = (value & 0xEF) | 0x20
+	status = (status & 0xEF) | 0x20
 	*cpu.PS = ProcessorStatus(status)
 	return 0
 }

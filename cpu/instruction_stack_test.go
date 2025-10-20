@@ -90,13 +90,13 @@ func TestCPU_PLP(t *testing.T) {
 	vector := &instructionTestVector{
 		name: "PLP",
 		memory: map[uint16]uint8{
-			0x8000:       0x28, // PLP
-			0x100 | 0x43: 0b00111111,
+			0x8000:       0x28,       // PLP
+			0x100 | 0x43: 0b00111111, // Value to be pulled from stack
 		},
 		sp:         pointer(uint8(0x42)),
 		cycles:     4,
 		psMask:     0xFF,       // Check all flags
-		expectedPS: 0b00111111, // Expect all flags to be set as per the value pulled from stack
+		expectedPS: 0b00101111, // Expect all flags to be set as per the value pulled from stack
 		expectedSP: pointer(uint8(0x43)),
 	}
 

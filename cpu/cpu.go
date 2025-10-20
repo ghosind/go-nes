@@ -51,16 +51,19 @@ func (cpu *CPU) Step() uint64 {
 	}
 
 	// Fetch operands
-	operands, addCycles := cpu.fetchOperands(instruction.addressing)
+	operands, crossPageCycles := cpu.fetchOperands(instruction.addressing)
 
 	if cpu.EnableTrace {
 		cpu.trace(pc, opcode, instruction, operands...)
 	}
 
 	// hardcode cycles to simulate the real cpu cycles
-	cycles := instruction.cycles + addCycles
+	cycles := instruction.cycles
+	if instruction.crossPageCycle && crossPageCycles > 0 {
+		cycles += crossPageCycles
+	}
 
-	// Execute instruction and get additional cycles
+	// Execute instruction and get additional execution cycles
 	cycles += instruction.execute(cpu, operands...)
 
 	// Update CPU cycles

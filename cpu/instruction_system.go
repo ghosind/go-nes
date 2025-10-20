@@ -31,6 +31,7 @@ func (cpu *CPU) nop(operands ...uint8) uint64 {
 func (cpu *CPU) rti(operands ...uint8) uint64 {
 	// Pull status from stack
 	status := cpu.popStack()
+	status = (status & 0xEF) | 0x20
 	*cpu.PS = ProcessorStatus(status)
 
 	// Pull PC from stack
