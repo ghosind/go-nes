@@ -1,6 +1,6 @@
 package cpu
 
-func (cpu *CPU) brk(operands ...uint8) {
+func (cpu *CPU) brk(operands ...uint8) uint64 {
 	cpu.PC++ // BRK has an implied padding byte
 	// Push PC to stack
 	pcHigh := uint8((cpu.PC) >> 8)
@@ -20,13 +20,15 @@ func (cpu *CPU) brk(operands ...uint8) {
 	low := cpu.mem.Read(0xFFFE)
 	high := cpu.mem.Read(0xFFFF)
 	cpu.PC = uint16(high)<<8 | uint16(low)
+	return 0
 }
 
-func (cpu *CPU) nop(operands ...uint8) {
+func (cpu *CPU) nop(operands ...uint8) uint64 {
 	// Do nothing
+	return 0
 }
 
-func (cpu *CPU) rti(operands ...uint8) {
+func (cpu *CPU) rti(operands ...uint8) uint64 {
 	// Pull status from stack
 	status := cpu.popStack()
 	*cpu.PS = ProcessorStatus(status)
@@ -35,4 +37,5 @@ func (cpu *CPU) rti(operands ...uint8) {
 	low := cpu.popStack()
 	high := cpu.popStack()
 	cpu.PC = uint16(high)<<8 | uint16(low)
+	return 0
 }

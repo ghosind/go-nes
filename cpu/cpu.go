@@ -60,8 +60,8 @@ func (cpu *CPU) Step() uint64 {
 	// hardcode cycles to simulate the real cpu cycles
 	cycles := instruction.cycles + addCycles
 
-	// Execute instruction
-	instruction.execute(cpu, operands...)
+	// Execute instruction and get additional cycles
+	cycles += instruction.execute(cpu, operands...)
 
 	// Update CPU cycles
 	cpu.Cycles += cycles

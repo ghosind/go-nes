@@ -2,7 +2,7 @@ package cpu
 
 type cpuInstruction struct {
 	opcode     string
-	execute    func(*CPU, ...uint8)
+	execute    func(*CPU, ...uint8) uint64
 	addressing AddressingMode
 	cycles     uint64
 }
