@@ -23,8 +23,7 @@ func (cpu *CPU) fetchOperands(mode AddressingMode) ([]uint8, uint64) {
 
 	switch mode {
 	case addressingModeImmediate, addressingModeZeroPage, addressingModeZeroPageX,
-		addressingModeZeroPageY, addressingModeIndexedIndirect,
-		addressingModeRelative:
+		addressingModeZeroPageY, addressingModeIndexedIndirect, addressingModeRelative:
 		op := cpu.fetch()
 		return []uint8{op}, additionalCycles
 	case addressingModeAbsolute, addressingModeIndirect:
@@ -47,8 +46,8 @@ func (cpu *CPU) fetchOperands(mode AddressingMode) ([]uint8, uint64) {
 		return []uint8{low, high}, additionalCycles
 	case addressingModeIndirectIndexed:
 		addr := cpu.fetch()
-		high := cpu.mem.ReadZeroPage(addr + 1)
-		if (uint16(high) + uint16(cpu.Y)) > 0xFF {
+		low := cpu.mem.ReadZeroPage(addr)
+		if (uint16(low) + uint16(cpu.Y)) > 0xFF {
 			additionalCycles = 1
 		}
 		return []uint8{addr}, additionalCycles
