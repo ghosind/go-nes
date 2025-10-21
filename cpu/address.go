@@ -46,7 +46,7 @@ func (cpu *CPU) fetchOperands(mode AddressingMode) ([]uint8, uint64) {
 		return []uint8{low, high}, additionalCycles
 	case addressingModeIndirectIndexed:
 		addr := cpu.fetch()
-		low := cpu.mem.ReadZeroPage(addr)
+		low := cpu.Mem.ReadZeroPage(addr)
 		if (uint16(low) + uint16(cpu.Y)) > 0xFF {
 			additionalCycles = 1
 		}

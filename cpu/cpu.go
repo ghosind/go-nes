@@ -12,22 +12,22 @@ type CPU struct {
 	X      uint8             // X Register
 	Y      uint8             // Y Register
 	PS     *ProcessorStatus  // Processor Status
-	mem    *memory.MemoryMap // Memory Bus
+	Mem    *memory.MemoryMap // Memory Bus
 	Cycles uint64
 
 	EnableTrace bool
 	Logger      logger.Logger
 }
 
-func New(bus *memory.MemoryMap) *CPU {
+func New(mmap *memory.MemoryMap) *CPU {
 	cpu := new(CPU)
 	cpu.PS = new(ProcessorStatus)
-	cpu.mem = bus
+	cpu.Mem = mmap
 	return cpu
 }
 
 func (cpu *CPU) Reset() {
-	cpu.PC = uint16(cpu.mem.Read(0xFFFD))<<8 | uint16(cpu.mem.Read(0xFFFC))
+	cpu.PC = uint16(cpu.Mem.Read(0xFFFD))<<8 | uint16(cpu.Mem.Read(0xFFFC))
 	cpu.SP = 0xFD
 	cpu.A = 0
 	cpu.X = 0
@@ -73,7 +73,7 @@ func (cpu *CPU) Step() uint64 {
 }
 
 func (cpu *CPU) fetch() uint8 {
-	value := cpu.mem.Read(cpu.PC)
+	value := cpu.Mem.Read(cpu.PC)
 	cpu.PC++
 	return value
 }

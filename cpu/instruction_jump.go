@@ -15,11 +15,11 @@ func (cpu *CPU) jmp_ind(operands ...uint8) uint64 {
 	// Emulate page boundary hardware bug
 	var targetLow, targetHigh uint8
 	if low == 0xFF {
-		targetLow = cpu.mem.Read(addr)
-		targetHigh = cpu.mem.Read(addr & 0xFF00) // Wrap around to the beginning of the page
+		targetLow = cpu.Mem.Read(addr)
+		targetHigh = cpu.Mem.Read(addr & 0xFF00) // Wrap around to the beginning of the page
 	} else {
-		targetLow = cpu.mem.Read(addr)
-		targetHigh = cpu.mem.Read(addr + 1)
+		targetLow = cpu.Mem.Read(addr)
+		targetHigh = cpu.Mem.Read(addr + 1)
 	}
 
 	cpu.PC = uint16(targetHigh)<<8 | uint16(targetLow)

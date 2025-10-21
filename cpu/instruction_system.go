@@ -17,8 +17,8 @@ func (cpu *CPU) brk(operands ...uint8) uint64 {
 	cpu.PS.setInterrupt(true)
 
 	// Set PC to the address at the IRQ/BRK vector ($FFFE/$FFFF)
-	low := cpu.mem.Read(0xFFFE)
-	high := cpu.mem.Read(0xFFFF)
+	low := cpu.Mem.Read(0xFFFE)
+	high := cpu.Mem.Read(0xFFFF)
 	cpu.PC = uint16(high)<<8 | uint16(low)
 	return 0
 }

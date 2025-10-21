@@ -60,12 +60,12 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 
 	// Load initial memory state
 	for addr, value := range vector.memory {
-		cpu.mem.Write(addr, value)
+		cpu.Mem.Write(addr, value)
 	}
 
 	// Set the reset vector to point to 0x8000
-	cpu.mem.Write(0xFFFC, 0x00)
-	cpu.mem.Write(0xFFFD, 0x80)
+	cpu.Mem.Write(0xFFFC, 0x00)
+	cpu.Mem.Write(0xFFFD, 0x80)
 
 	// Reset the CPU to initialize PC and other registers
 	cpu.Reset()
@@ -95,7 +95,7 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 			"%s: expected PS flags %08b, got %08b", vector.name, expected, actual)
 	}
 	for addr, value := range vector.expectedMem {
-		actual := cpu.mem.Read(addr)
+		actual := cpu.Mem.Read(addr)
 		a.EqualNow(actual, value,
 			"%s: expected memory at 0x%04X to be 0x%02X, got 0x%02X",
 			vector.name, addr, value, actual)
