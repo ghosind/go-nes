@@ -50,7 +50,9 @@ func TestNESByNESTest(t *testing.T) {
 
 	for i, expectedLog := range lines {
 		nes.Step()
+		// Trim spaces and new lines
 		actualLog := strings.TrimSpace(logger.buf.String())
+		expectedLog = strings.TrimSpace(expectedLog)
 		a.EqualNow(actualLog, expectedLog, "step %d, expected log: \"%s\", actual log: \"%s\"",
 			i+1, expectedLog, actualLog)
 		logger.buf.Reset()
