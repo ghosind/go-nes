@@ -7,13 +7,16 @@
 
 go-nes is a focused, well-tested Go library that implements the core internals of an NES emulator. It intentionally excludes GUI and real hardware I/O (display/windowing, real controllers, audio output). The goal is to provide a clean, reusable emulator core you can embed into your own frontend, educational tooling, or testing harness.
 
+> [!IMPORTANT]
+> This project is a work in progress and may not yet be feature-complete or fully accurate.
+
 ## Features
 
 - Accurate 6502 CPU emulation with support for all official opcodes and addressing modes.
 <!-- - Basic PPU implementation for rendering graphics (background and sprites). -->
 <!-- - APU stubs for audio processing (full audio implementation is a work in progress). -->
-<!-- - Memory mapping that supports various NES mappers (NROM, MMC1, etc.). -->
-- Loading and parsing of iNES format ROM files.
+- Memory mapping that supports various NES mappers (NROM, MMC1, etc.).
+- Passed the NESTest CPU test ROM for 6502 instructions and unofficial opcodes accuracy.
 
 ## Components
 
@@ -26,6 +29,10 @@ go-nes is a focused, well-tested Go library that implements the core internals o
 - `rom/ines`: Loads and parses iNES header.
 - `rom/mapper`: Supports various NES cartridge mappers for memory banking.
 - more components to be added...
+
+## Supported Mappers
+
+- NROM (Mapper 0)
 
 ## Reference
 

@@ -345,7 +345,71 @@ var (
 		// RTI - Return from Interrupt
 		0x40: {opcode: "RTI", execute: (*CPU).rti, addressing: addressingModeImplied, cycles: 6},
 
-		// Additional NOPs
+		// Unofficial Operations
+
+		0xA7: {opcode: "*LAX", execute: (*CPU).lax_zp, addressing: addressingModeZeroPage, cycles: 3},
+		0xB7: {opcode: "*LAX", execute: (*CPU).lax_zp_y, addressing: addressingModeZeroPageY, cycles: 4},
+		0xAF: {opcode: "*LAX", execute: (*CPU).lax_abs, addressing: addressingModeAbsolute, cycles: 4},
+		0xBF: {opcode: "*LAX", execute: (*CPU).lax_abs_y, addressing: addressingModeAbsoluteY, cycles: 4, crossPageCycle: true},
+		0xA3: {opcode: "*LAX", execute: (*CPU).lax_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6},
+		0xB3: {opcode: "*LAX", execute: (*CPU).lax_ind_y, addressing: addressingModeIndirectIndexed, cycles: 5, crossPageCycle: true},
+		0x87: {opcode: "*SAX", execute: (*CPU).sax_zp, addressing: addressingModeZeroPage, cycles: 3},
+		0x97: {opcode: "*SAX", execute: (*CPU).sax_zp_y, addressing: addressingModeZeroPageY, cycles: 4},
+		0x8F: {opcode: "*SAX", execute: (*CPU).sax_abs, addressing: addressingModeAbsolute, cycles: 4},
+		0x83: {opcode: "*SAX", execute: (*CPU).sax_ind_x, addressing: addressingModeIndexedIndirect, cycles: 6},
+
+		0xC7: {opcode: "*DCP", execute: (*CPU).dcp_zp, addressing: addressingModeZeroPage, cycles: 5},
+		0xD7: {opcode: "*DCP", execute: (*CPU).dcp_zp_x, addressing: addressingModeZeroPageX, cycles: 6},
+		0xCF: {opcode: "*DCP", execute: (*CPU).dcp_abs, addressing: addressingModeAbsolute, cycles: 6},
+		0xDF: {opcode: "*DCP", execute: (*CPU).dcp_abs_x, addressing: addressingModeAbsoluteX, cycles: 7},
+		0xDB: {opcode: "*DCP", execute: (*CPU).dcp_abs_y, addressing: addressingModeAbsoluteY, cycles: 7},
+		0xC3: {opcode: "*DCP", execute: (*CPU).dcp_ind_x, addressing: addressingModeIndexedIndirect, cycles: 8},
+		0xD3: {opcode: "*DCP", execute: (*CPU).dcp_ind_y, addressing: addressingModeIndirectIndexed, cycles: 8},
+
+		0xE7: {opcode: "*ISB", execute: (*CPU).isb_zp, addressing: addressingModeZeroPage, cycles: 5},
+		0xF7: {opcode: "*ISB", execute: (*CPU).isb_zp_x, addressing: addressingModeZeroPageX, cycles: 6},
+		0xEF: {opcode: "*ISB", execute: (*CPU).isb_abs, addressing: addressingModeAbsolute, cycles: 6},
+		0xFF: {opcode: "*ISB", execute: (*CPU).isb_abs_x, addressing: addressingModeAbsoluteX, cycles: 7},
+		0xFB: {opcode: "*ISB", execute: (*CPU).isb_abs_y, addressing: addressingModeAbsoluteY, cycles: 7},
+		0xE3: {opcode: "*ISB", execute: (*CPU).isb_ind_x, addressing: addressingModeIndexedIndirect, cycles: 8},
+		0xF3: {opcode: "*ISB", execute: (*CPU).isb_ind_y, addressing: addressingModeIndirectIndexed, cycles: 8},
+
+		0x07: {opcode: "*SLO", execute: (*CPU).slo_zp, addressing: addressingModeZeroPage, cycles: 5},
+		0x17: {opcode: "*SLO", execute: (*CPU).slo_zp_x, addressing: addressingModeZeroPageX, cycles: 6},
+		0x0F: {opcode: "*SLO", execute: (*CPU).slo_abs, addressing: addressingModeAbsolute, cycles: 6},
+		0x1F: {opcode: "*SLO", execute: (*CPU).slo_abs_x, addressing: addressingModeAbsoluteX, cycles: 7},
+		0x1B: {opcode: "*SLO", execute: (*CPU).slo_abs_y, addressing: addressingModeAbsoluteY, cycles: 7},
+		0x03: {opcode: "*SLO", execute: (*CPU).slo_ind_x, addressing: addressingModeIndexedIndirect, cycles: 8},
+		0x13: {opcode: "*SLO", execute: (*CPU).slo_ind_y, addressing: addressingModeIndirectIndexed, cycles: 8},
+
+		0x27: {opcode: "*RLA", execute: (*CPU).rla_zp, addressing: addressingModeZeroPage, cycles: 5},
+		0x37: {opcode: "*RLA", execute: (*CPU).rla_zp_x, addressing: addressingModeZeroPageX, cycles: 6},
+		0x2F: {opcode: "*RLA", execute: (*CPU).rla_abs, addressing: addressingModeAbsolute, cycles: 6},
+		0x3F: {opcode: "*RLA", execute: (*CPU).rla_abs_x, addressing: addressingModeAbsoluteX, cycles: 7},
+		0x3B: {opcode: "*RLA", execute: (*CPU).rla_abs_y, addressing: addressingModeAbsoluteY, cycles: 7},
+		0x23: {opcode: "*RLA", execute: (*CPU).rla_ind_x, addressing: addressingModeIndexedIndirect, cycles: 8},
+		0x33: {opcode: "*RLA", execute: (*CPU).rla_ind_y, addressing: addressingModeIndirectIndexed, cycles: 8},
+
+		0x47: {opcode: "*SRE", execute: (*CPU).sre_zp, addressing: addressingModeZeroPage, cycles: 5},
+		0x57: {opcode: "*SRE", execute: (*CPU).sre_zp_x, addressing: addressingModeZeroPageX, cycles: 6},
+		0x4F: {opcode: "*SRE", execute: (*CPU).sre_abs, addressing: addressingModeAbsolute, cycles: 6},
+		0x5F: {opcode: "*SRE", execute: (*CPU).sre_abs_x, addressing: addressingModeAbsoluteX, cycles: 7},
+		0x5B: {opcode: "*SRE", execute: (*CPU).sre_abs_y, addressing: addressingModeAbsoluteY, cycles: 7},
+		0x43: {opcode: "*SRE", execute: (*CPU).sre_ind_x, addressing: addressingModeIndexedIndirect, cycles: 8},
+		0x53: {opcode: "*SRE", execute: (*CPU).sre_ind_y, addressing: addressingModeIndirectIndexed, cycles: 8},
+
+		0x67: {opcode: "*RRA", execute: (*CPU).rra_zp, addressing: addressingModeZeroPage, cycles: 5},
+		0x77: {opcode: "*RRA", execute: (*CPU).rra_zp_x, addressing: addressingModeZeroPageX, cycles: 6},
+		0x6F: {opcode: "*RRA", execute: (*CPU).rra_abs, addressing: addressingModeAbsolute, cycles: 6},
+		0x7F: {opcode: "*RRA", execute: (*CPU).rra_abs_x, addressing: addressingModeAbsoluteX, cycles: 7},
+		0x7B: {opcode: "*RRA", execute: (*CPU).rra_abs_y, addressing: addressingModeAbsoluteY, cycles: 7},
+		0x63: {opcode: "*RRA", execute: (*CPU).rra_ind_x, addressing: addressingModeIndexedIndirect, cycles: 8},
+		0x73: {opcode: "*RRA", execute: (*CPU).rra_ind_y, addressing: addressingModeIndirectIndexed, cycles: 8},
+
+		0xEB: {opcode: "*SBC", execute: (*CPU).sbc_imm, addressing: addressingModeImmediate, cycles: 2},
+
+		// Additional NOPs (unofficial, for NES 6502 compatibility)
+
 		0x80: {opcode: "*NOP", execute: (*CPU).nop, addressing: addressingModeImmediate, cycles: 2},
 		0x82: {opcode: "*NOP", execute: (*CPU).nop, addressing: addressingModeImmediate, cycles: 2},
 		0x89: {opcode: "*NOP", execute: (*CPU).nop, addressing: addressingModeImmediate, cycles: 2},
