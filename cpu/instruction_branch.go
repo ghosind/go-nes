@@ -1,11 +1,6 @@
 package cpu
 
-func (cpu *CPU) bcc(operands ...uint8) uint64 {
-	if cpu.PS.getCarry() {
-		return 0
-	}
-
-	rel := operands[0]
+func (cpu *CPU) branch_jump(rel uint8) uint64 {
 	if rel&0x80 != 0 {
 		rel = 0xFF - rel + 1
 		cpu.PC -= uint16(rel)
@@ -14,6 +9,14 @@ func (cpu *CPU) bcc(operands ...uint8) uint64 {
 	}
 
 	return 1
+}
+
+func (cpu *CPU) bcc(operands ...uint8) uint64 {
+	if cpu.PS.getCarry() {
+		return 0
+	}
+
+	return cpu.branch_jump(operands[0])
 }
 
 func (cpu *CPU) bcs(operands ...uint8) uint64 {
@@ -21,15 +24,7 @@ func (cpu *CPU) bcs(operands ...uint8) uint64 {
 		return 0
 	}
 
-	rel := operands[0]
-	if rel&0x80 != 0 {
-		rel = 0xFF - rel + 1
-		cpu.PC -= uint16(rel)
-	} else {
-		cpu.PC += uint16(rel)
-	}
-
-	return 1
+	return cpu.branch_jump(operands[0])
 }
 
 func (cpu *CPU) beq(operands ...uint8) uint64 {
@@ -37,15 +32,7 @@ func (cpu *CPU) beq(operands ...uint8) uint64 {
 		return 0
 	}
 
-	rel := operands[0]
-	if rel&0x80 != 0 {
-		rel = 0xFF - rel + 1
-		cpu.PC -= uint16(rel)
-	} else {
-		cpu.PC += uint16(rel)
-	}
-
-	return 1
+	return cpu.branch_jump(operands[0])
 }
 
 func (cpu *CPU) bmi(operands ...uint8) uint64 {
@@ -53,15 +40,7 @@ func (cpu *CPU) bmi(operands ...uint8) uint64 {
 		return 0
 	}
 
-	rel := operands[0]
-	if rel&0x80 != 0 {
-		rel = 0xFF - rel + 1
-		cpu.PC -= uint16(rel)
-	} else {
-		cpu.PC += uint16(rel)
-	}
-
-	return 1
+	return cpu.branch_jump(operands[0])
 }
 
 func (cpu *CPU) bne(operands ...uint8) uint64 {
@@ -69,15 +48,7 @@ func (cpu *CPU) bne(operands ...uint8) uint64 {
 		return 0
 	}
 
-	rel := operands[0]
-	if rel&0x80 != 0 {
-		rel = 0xFF - rel + 1
-		cpu.PC -= uint16(rel)
-	} else {
-		cpu.PC += uint16(rel)
-	}
-
-	return 1
+	return cpu.branch_jump(operands[0])
 }
 
 func (cpu *CPU) bpl(operands ...uint8) uint64 {
@@ -85,15 +56,7 @@ func (cpu *CPU) bpl(operands ...uint8) uint64 {
 		return 0
 	}
 
-	rel := operands[0]
-	if rel&0x80 != 0 {
-		rel = 0xFF - rel + 1
-		cpu.PC -= uint16(rel)
-	} else {
-		cpu.PC += uint16(rel)
-	}
-
-	return 1
+	return cpu.branch_jump(operands[0])
 }
 
 func (cpu *CPU) bvc(operands ...uint8) uint64 {
@@ -101,15 +64,7 @@ func (cpu *CPU) bvc(operands ...uint8) uint64 {
 		return 0
 	}
 
-	rel := operands[0]
-	if rel&0x80 != 0 {
-		rel = 0xFF - rel + 1
-		cpu.PC -= uint16(rel)
-	} else {
-		cpu.PC += uint16(rel)
-	}
-
-	return 1
+	return cpu.branch_jump(operands[0])
 }
 
 func (cpu *CPU) bvs(operands ...uint8) uint64 {
@@ -117,13 +72,5 @@ func (cpu *CPU) bvs(operands ...uint8) uint64 {
 		return 0
 	}
 
-	rel := operands[0]
-	if rel&0x80 != 0 {
-		rel = 0xFF - rel + 1
-		cpu.PC -= uint16(rel)
-	} else {
-		cpu.PC += uint16(rel)
-	}
-
-	return 1
+	return cpu.branch_jump(operands[0])
 }
