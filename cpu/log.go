@@ -87,7 +87,13 @@ func (cpu *CPU) disassemble(pc uint16, ins cpuInstruction, operands ...uint8) st
 	case addressingModeImplied:
 		// nothing to do
 	case addressingModeRelative:
-		buf = append(buf, fmt.Sprintf(" $%02X", pc+2+uint16(operands[0]))...)
+		addr := pc + 2
+		if operands[0] < 0x80 {
+			addr += uint16(operands[0])
+		} else {
+			addr -= 0x100 - uint16(operands[0])
+		}
+		buf = append(buf, fmt.Sprintf(" $%02X", addr)...)
 	default:
 		buf = append(buf, " ???"...)
 	}
