@@ -1,14 +1,23 @@
 package cpu
 
 func (cpu *CPU) branch_jump(rel uint8) uint64 {
+	cycles := uint64(1)
+	newPc := cpu.PC
+
 	if rel&0x80 != 0 {
 		rel = 0xFF - rel + 1
-		cpu.PC -= uint16(rel)
+		newPc -= uint16(rel)
 	} else {
-		cpu.PC += uint16(rel)
+		newPc += uint16(rel)
 	}
 
-	return 1
+	if (newPc & 0xFF00) != (cpu.PC & 0xFF00) {
+		cycles++
+	}
+
+	cpu.PC = newPc
+
+	return cycles
 }
 
 func (cpu *CPU) bcc(operands ...uint8) uint64 {
