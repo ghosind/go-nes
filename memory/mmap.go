@@ -1,6 +1,9 @@
 package memory
 
-import "github.com/ghosind/go-nes/rom"
+import (
+	"github.com/ghosind/go-nes/ppu"
+	"github.com/ghosind/go-nes/rom"
+)
 
 // MemoryMap represents the NES memory map. It includes RAM, ROM, and I/O registers.
 //
@@ -20,19 +23,24 @@ type MemoryMap struct {
 	mem [65536]uint8
 	// ram represents the 2KB internal RAM of the NES.
 	ram RAM
+	// ppu represents the Picture Processing Unit.
+	ppu *ppu.PPU
 	// rom represents the cartridge ROM, which includes PRG ROM and PRG RAM.
 	rom *rom.ROM
 }
 
-func NewMemoryMap(rom *rom.ROM) *MemoryMap {
+func NewMemoryMap(rom *rom.ROM, ppu *ppu.PPU) *MemoryMap {
 	mmap := new(MemoryMap)
 	mmap.rom = rom
+	mmap.ppu = ppu
 	return mmap
 }
 
 func (m *MemoryMap) Read(addr uint16) uint8 {
 	if addr < 0x2000 {
 		return m.ram.Read(addr)
+	} else if addr < 0x4000 {
+		return m.ppu.CPURead(addr)
 	} else if addr >= 0x6000 {
 		return m.rom.CPURead(addr)
 	}
@@ -69,6 +77,8 @@ func (m *MemoryMap) ReadIndirectIndexed(addr, shift uint8) uint8 {
 func (m *MemoryMap) Write(addr uint16, value uint8) {
 	if addr < 0x2000 {
 		m.ram.Write(addr, value)
+	} else if addr >= 0x2000 && addr < 0x4000 {
+		m.ppu.CPUWrite(addr, value)
 	} else if addr >= 0x6000 {
 		m.rom.CPUWrite(addr, value)
 	} else {

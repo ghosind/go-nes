@@ -28,9 +28,9 @@ func New(data []byte) (*NES, error) {
 	if err != nil {
 		return nil, err
 	}
-	nes.mmap = memory.NewMemoryMap(nes.rom)
 	nes.apu = apu.New()
 	nes.ppu = ppu.New(nes.rom)
+	nes.mmap = memory.NewMemoryMap(nes.rom, nes.ppu)
 	nes.cpu = cpu.New(nes.mmap)
 	nes.cpu.Reset()
 

@@ -56,7 +56,7 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 	// Create a new CPU instance
 	cpu := New(memory.NewMemoryMap(&rom.ROM{
 		Mapper: new(testMapper),
-	}))
+	}, nil))
 
 	// Load initial memory state
 	for addr, value := range vector.memory {
