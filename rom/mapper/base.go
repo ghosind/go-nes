@@ -7,6 +7,7 @@ type mapper struct {
 	prgRom []byte
 	chrRom []byte
 	prgRam []byte
+	chrRam []byte
 }
 
 func (m *mapper) init(header *ines.INESHeader, data []byte) error {

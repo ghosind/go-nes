@@ -11,6 +11,10 @@ type mapper0 struct {
 func NewMapper0(header *ines.INESHeader, data []byte) Mapper {
 	m := new(mapper0)
 	m.init(header, data)
+
+	if m.header.ChrRomBanks == 0 {
+		m.chrRam = make([]byte, 8*1024) // Default to 8KB CHR RAM
+	}
 	return m
 }
 
@@ -36,10 +40,17 @@ func (m *mapper0) CPUWrite(addr uint16, value uint8) {
 }
 
 func (m *mapper0) PPURead(addr uint16) uint8 {
-	// TODO
+	if addr < 0x2000 {
+		if m.header.ChrRomBanks == 0 {
+			return m.chrRam[addr]
+		}
+		return m.chrRom[addr]
+	}
 	return 0
 }
 
 func (m *mapper0) PPUWrite(addr uint16, value uint8) {
-	// TODO
+	if addr < 0x2000 && m.header.ChrRomBanks == 0 {
+		m.chrRam[addr] = value
+	}
 }

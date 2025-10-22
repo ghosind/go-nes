@@ -30,7 +30,7 @@ func New(data []byte) (*NES, error) {
 	}
 	nes.mmap = memory.NewMemoryMap(nes.rom)
 	nes.apu = apu.New()
-	nes.ppu = ppu.New()
+	nes.ppu = ppu.New(nes.rom)
 	nes.cpu = cpu.New(nes.mmap)
 	nes.cpu.Reset()
 
