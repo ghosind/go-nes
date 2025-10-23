@@ -65,8 +65,8 @@ func TestCPU_ADC_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x6D, // ADC Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2000: 0x10, // Value to add
+			0x8002: 0x10, // High byte of address
+			0x1000: 0x10, // Value to add
 		},
 		a:          0x20,
 		cycles:     4,
@@ -84,8 +84,8 @@ func TestCPU_ADC_ABS_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x7D, // ADC Absolute, X
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2005: 0x10, // Value to add (0x2000 + X(5) = 0x2005)
+			0x8002: 0x10, // High byte of address
+			0x1005: 0x10, // Value to add (0x1000 + X(5) = 0x1005)
 		},
 		a:          0x20,
 		x:          5,
@@ -104,8 +104,8 @@ func TestCPU_ADC_ABS_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x79, // ADC Absolute, Y
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2005: 0x10, // Value to add (0x2000 + Y(5) = 0x2005)
+			0x8002: 0x10, // High byte of address
+			0x1005: 0x10, // Value to add (0x1000 + Y(5) = 0x1005)
 		},
 		a:          0x20,
 		y:          5,
@@ -125,8 +125,8 @@ func TestCPU_ADC_IND_X(t *testing.T) {
 			0x8000: 0x61, // ADC (Indirect, X)
 			0x8001: 0x10, // Zero Page Address
 			0x0015: 0x00, // Low byte of effective address (0x0015 = 0x10 + X(5))
-			0x0016: 0x20, // High byte of effective address
-			0x2000: 0x10, // Value to add
+			0x0016: 0x10, // High byte of effective address
+			0x1000: 0x10, // Value to add
 		},
 		a:          0x20,
 		x:          5,
@@ -146,8 +146,8 @@ func TestCPU_ADC_IND_Y(t *testing.T) {
 			0x8000: 0x71, // ADC (Indirect), Y
 			0x8001: 0x10, // Zero Page Address
 			0x0010: 0x00, // Low byte of effective address
-			0x0011: 0x20, // High byte of effective address
-			0x2005: 0x10, // Value to add (0x2000 + Y(5) = 0x2005)
+			0x0011: 0x10, // High byte of effective address
+			0x1005: 0x10, // Value to add (0x1000 + Y(5) = 0x1005)
 		},
 		a:          0x20,
 		y:          5,
@@ -223,8 +223,8 @@ func TestCPU_SBC_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xED, // SBC Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2000: 0x10, // Value to subtract
+			0x8002: 0x10, // High byte of address
+			0x1000: 0x10, // Value to subtract
 		},
 		a:          0x20,
 		ps:         psFlagCarry,
@@ -243,8 +243,8 @@ func TestCPU_SBC_ABS_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xFD, // SBC Absolute, X
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2005: 0x10, // Value to subtract (0x2000 + X(5) = 0x2005)
+			0x8002: 0x10, // High byte of address
+			0x1005: 0x10, // Value to subtract (0x1000 + X(5) = 0x1005)
 		},
 		a:          0x20,
 		x:          5,
@@ -264,8 +264,8 @@ func TestCPU_SBC_ABS_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xF9, // SBC Absolute,Y
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2005: 0x10, // Value to subtract (0x2000 + Y(5) = 0x2005)
+			0x8002: 0x10, // High byte of address
+			0x1005: 0x10, // Value to subtract (0x1000 + Y(5) = 0x1005)
 		},
 		a:          0x20,
 		y:          5,
@@ -286,8 +286,8 @@ func TestCPU_SBC_IND_X(t *testing.T) {
 			0x8000: 0xE1, // SBC (Indirect, X)
 			0x8001: 0x10, // Zero Page Address
 			0x0015: 0x00, // Low byte of effective address (0x0015 = 0x10 + X(5))
-			0x0016: 0x20, // High byte of effective address
-			0x2000: 0x10, // Value to subtract
+			0x0016: 0x10, // High byte of effective address
+			0x1000: 0x10, // Value to subtract
 		},
 		a:          0x20,
 		x:          5,
@@ -308,8 +308,8 @@ func TestCPU_SBC_IND_Y(t *testing.T) {
 			0x8000: 0xF1, // SBC (Indirect),Y
 			0x8001: 0x10, // Zero Page Address
 			0x0010: 0x00, // Low byte of effective address
-			0x0011: 0x20, // High byte of effective address
-			0x2005: 0x10, // Value to subtract (0x2000 + Y(5) = 0x2005)
+			0x0011: 0x10, // High byte of effective address
+			0x1005: 0x10, // Value to subtract (0x1000 + Y(5) = 0x1005)
 		},
 		a:          0x20,
 		y:          5,
@@ -380,8 +380,8 @@ func TestCPU_CMP_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xCD, // CMP Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2000: 0x10, // Value to compare
+			0x8002: 0x10, // High byte of address
+			0x1000: 0x10, // Value to compare
 		},
 		a:          0x20,
 		cycles:     4,
@@ -398,8 +398,8 @@ func TestCPU_CMP_ABS_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xDD, // CMP Absolute, X
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2005: 0x10, // Value to compare (0x2000 + X(5) = 0x2005)
+			0x8002: 0x10, // High byte of address
+			0x1005: 0x10, // Value to compare (0x1000 + X(5) = 0x1005)
 		},
 		a:          0x20,
 		x:          5,
@@ -417,8 +417,8 @@ func TestCPU_CMP_ABS_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xD9, // CMP Absolute, Y
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2005: 0x10, // Value to compare (0x2000 + Y(5) = 0x2005)
+			0x8002: 0x10, // High byte of address
+			0x1005: 0x10, // Value to compare (0x1000 + Y(5) = 0x1005)
 		},
 		a:          0x20,
 		y:          5,
@@ -437,8 +437,8 @@ func TestCPU_CMP_IND_X(t *testing.T) {
 			0x8000: 0xC1, // CMP (Indirect, X)
 			0x8001: 0x10, // Zero Page Address
 			0x0015: 0x00, // Low byte of effective address (0x0015 = 0x10 + X(5))
-			0x0016: 0x20, // High byte of effective address
-			0x2000: 0x10, // Value to compare
+			0x0016: 0x10, // High byte of effective address
+			0x1000: 0x10, // Value to compare
 		},
 		a:          0x20,
 		x:          5,
@@ -457,8 +457,8 @@ func TestCPU_CMP_IND_Y(t *testing.T) {
 			0x8000: 0xD1, // CMP (Indirect), Y
 			0x8001: 0x10, // Zero Page Address
 			0x0010: 0x00, // Low byte of effective address
-			0x0011: 0x20, // High byte of effective address
-			0x2005: 0x10, // Value to compare (0x2000 + Y(5) = 0x2005)
+			0x0011: 0x10, // High byte of effective address
+			0x1005: 0x10, // Value to compare (0x1000 + Y(5) = 0x1005)
 		},
 		a:          0x20,
 		y:          5,
@@ -509,8 +509,8 @@ func TestCPU_CPX_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xEC, // CPX Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2000: 0x10, // Value to compare
+			0x8002: 0x10, // High byte of address
+			0x1000: 0x10, // Value to compare
 		},
 		x:          0x20,
 		cycles:     4,
@@ -560,8 +560,8 @@ func TestCPU_CPY_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xCC, // CPY Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address
-			0x2000: 0x10, // Value to compare
+			0x8002: 0x10, // High byte of address
+			0x1000: 0x10, // Value to compare
 		},
 		y:          0x20,
 		cycles:     4,

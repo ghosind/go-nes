@@ -61,8 +61,8 @@ func TestCPU_LDA_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xAD, // LDA Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address (0x2000)
-			0x2000: 0x7A, // Value at address 0x2000
+			0x8002: 0x10, // High byte of address (0x1000)
+			0x1000: 0x7A, // Value at address 0x1000
 		},
 		cycles:     4,
 		psMask:     psFlagZero | psFlagNegative,
@@ -79,8 +79,8 @@ func TestCPU_LDA_ABS_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xBD, // LDA Absolute, X
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address (0x2000)
-			0x2005: 0x9C, // Value at address 0x2000 + X (0x2005)
+			0x8002: 0x10, // High byte of address (0x1000)
+			0x1005: 0x9C, // Value at address 0x1000 + X (0x1005)
 		},
 		x:          0x05, // Set X register to 5
 		cycles:     4,
@@ -98,8 +98,8 @@ func TestCPU_LDA_ABS_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xB9, // LDA Absolute, Y
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address (0x2000)
-			0x2003: 0xFF, // Value at address 0x2000 + Y (0x2003)
+			0x8002: 0x10, // High byte of address (0x1000)
+			0x1003: 0xFF, // Value at address 0x1000 + Y (0x1003)
 		},
 		y:          0x03, // Set Y register to 3
 		cycles:     4,
@@ -117,9 +117,9 @@ func TestCPU_LDA_IND_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xA1, // LDA (Indirect, X)
 			0x8001: 0x10, // Operand: Zero Page address 0x10
-			0x0015: 0x00, // Low byte of effective address (0x3000)
-			0x0016: 0x30, // High byte of effective address
-			0x3000: 0x66, // Value at effective address 0x3000
+			0x0015: 0x00, // Low byte of effective address (0x1000)
+			0x0016: 0x10, // High byte of effective address
+			0x1000: 0x66, // Value at effective address 0x1000
 		},
 		x:          0x05, // Set X register to 5
 		cycles:     6,
@@ -137,9 +137,9 @@ func TestCPU_LDA_IND_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xB1, // LDA (Indirect), Y
 			0x8001: 0x10, // Operand: Zero Page address 0x10
-			0x0010: 0x00, // Low byte of base address (0x3000)
-			0x0011: 0x30, // High byte of base address
-			0x3002: 0xAB, // Value at effective address 0x3000 + Y (0x3002)
+			0x0010: 0x00, // Low byte of base address (0x1000)
+			0x0011: 0x10, // High byte of base address
+			0x1002: 0xAB, // Value at effective address 0x1000 + Y (0x1002)
 		},
 		y:          0x02, // Set Y register to 2
 		cycles:     5,
@@ -208,8 +208,8 @@ func TestCPU_LDX_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xAE, // LDX Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x30, // High byte of address (0x3000)
-			0x3000: 0x88, // Value at address 0x3000
+			0x8002: 0x10, // High byte of address (0x1000)
+			0x1000: 0x88, // Value at address 0x1000
 		},
 		cycles:     4,
 		psMask:     psFlagZero | psFlagNegative,
@@ -226,8 +226,8 @@ func TestCPU_LDX_ABS_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0xBE, // LDX Absolute, Y
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x30, // High byte of address (0x3000)
-			0x3004: 0x22, // Value at address 0x3000 + Y (0x3004)
+			0x8002: 0x10, // High byte of address (0x1000)
+			0x1004: 0x22, // Value at address 0x1000 + Y (0x1004)
 		},
 		y:          0x04, // Set Y register to 4
 		cycles:     4,
@@ -368,12 +368,12 @@ func TestCPU_STA_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x8D, // STA Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address (0x2000)
+			0x8002: 0x10, // High byte of address (0x1000)
 		},
 		a:      0x99, // Pre-load A with 0x99
 		cycles: 4,
 		expectedMem: map[uint16]uint8{
-			0x2000: 0x99,
+			0x1000: 0x99,
 		},
 	}
 
@@ -386,13 +386,13 @@ func TestCPU_STA_ABS_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x9D, // STA Absolute, X
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address (0x2000)
+			0x8002: 0x10, // High byte of address (0x1000)
 		},
 		a:      0x55, // Pre-load A with 0x55
 		x:      0x05, // Set X register to 5
 		cycles: 5,
 		expectedMem: map[uint16]uint8{
-			0x2005: 0x55,
+			0x1005: 0x55,
 		},
 	}
 
@@ -405,13 +405,13 @@ func TestCPU_STA_ABS_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x99, // STA Absolute, Y
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address (0x2000)
+			0x8002: 0x10, // High byte of address (0x1000)
 		},
 		a:      0x77, // Pre-load A with 0x77
 		y:      0x03, // Set Y register to 3
 		cycles: 5,
 		expectedMem: map[uint16]uint8{
-			0x2003: 0x77,
+			0x1003: 0x77,
 		},
 	}
 
@@ -424,14 +424,14 @@ func TestCPU_STA_IND_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x81, // STA (Indirect, X)
 			0x8001: 0x10, // Operand: Zero Page address 0x10
-			0x0015: 0x00, // Low byte of effective address (0x3000)
-			0x0016: 0x30, // High byte of effective address
+			0x0015: 0x00, // Low byte of effective address (0x1000)
+			0x0016: 0x10, // High byte of effective address
 		},
 		a:      0x42, // Pre-load A with 0x42
 		x:      0x05, // Set X register to 5
 		cycles: 6,
 		expectedMem: map[uint16]uint8{
-			0x3000: 0x42,
+			0x1000: 0x42,
 		},
 	}
 
@@ -444,14 +444,14 @@ func TestCPU_STA_IND_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x91, // STA (Indirect), Y
 			0x8001: 0x10, // Operand: Zero Page address 0x10
-			0x0010: 0x00, // Low byte of base address (0x3000)
-			0x0011: 0x30, // High byte of base address
+			0x0010: 0x00, // Low byte of base address (0x1000)
+			0x0011: 0x10, // High byte of base address
 		},
 		a:      0x37, // Pre-load A with 0x37
 		y:      0x02, // Set Y register to 2
 		cycles: 6,
 		expectedMem: map[uint16]uint8{
-			0x3002: 0x37,
+			0x1002: 0x37,
 		},
 	}
 
@@ -499,12 +499,12 @@ func TestCPU_STX_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x8E, // STX Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address (0x2000)
+			0x8002: 0x10, // High byte of address (0x1000)
 		},
 		x:      0x77, // Pre-load X with 0x77
 		cycles: 4,
 		expectedMem: map[uint16]uint8{
-			0x2000: 0x77,
+			0x1000: 0x77,
 		},
 	}
 
@@ -552,12 +552,12 @@ func TestCPU_STY_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x8C, // STY Absolute
 			0x8001: 0x00, // Low byte of address
-			0x8002: 0x20, // High byte of address (0x2000)
+			0x8002: 0x10, // High byte of address (0x1000)
 		},
 		y:      0x22, // Pre-load Y with 0x22
 		cycles: 4,
 		expectedMem: map[uint16]uint8{
-			0x2000: 0x22,
+			0x1000: 0x22,
 		},
 	}
 

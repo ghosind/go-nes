@@ -64,8 +64,8 @@ func TestCPU_AND_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x2D, // AND absolute
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2000: 0x0F, // Value at absolute address
+			0x8002: 0x10, // High byte of operand
+			0x1000: 0x0F, // Value at absolute address
 		},
 		a:          0x3C,
 		cycles:     4,
@@ -83,8 +83,8 @@ func TestCPU_AND_ABS_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x3D, // AND absolute, X
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2005: 0x0F, // Value at absolute address + X
+			0x8002: 0x10, // High byte of operand
+			0x1005: 0x0F, // Value at absolute address + X
 		},
 		a:          0x3C,
 		x:          0x05,
@@ -103,8 +103,8 @@ func TestCPU_AND_ABS_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x39, // AND absolute, Y
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2005: 0x0F, // Value at absolute address + Y
+			0x8002: 0x10, // High byte of operand
+			0x1005: 0x0F, // Value at absolute address + Y
 		},
 		a:          0x3C,
 		y:          0x05,
@@ -124,8 +124,8 @@ func TestCPU_AND_IND_X(t *testing.T) {
 			0x8000: 0x21, // AND (indirect, X)
 			0x8001: 0x10, // Operand
 			0x0015: 0x00, // Low byte of effective address (use addition for clarity)
-			0x0016: 0x20, // High byte of effective address
-			0x2000: 0x0F, // Value at effective address
+			0x0016: 0x10, // High byte of effective address
+			0x1000: 0x0F, // Value at effective address
 		},
 		a:          0x3C,
 		x:          0x05,
@@ -145,8 +145,8 @@ func TestCPU_AND_IND_Y(t *testing.T) {
 			0x8000: 0x31, // AND (indirect), Y
 			0x8001: 0x10, // Operand
 			0x0010: 0x00, // Low byte of effective address
-			0x0011: 0x20, // High byte of effective address
-			0x2005: 0x0F, // Value at effective address + Y
+			0x0011: 0x10, // High byte of effective address
+			0x1005: 0x0F, // Value at effective address + Y
 		},
 		a:          0x3C,
 		y:          0x05,
@@ -219,8 +219,8 @@ func TestCPU_EOR_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x4D, // EOR absolute
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2000: 0x0F, // Value at absolute address
+			0x8002: 0x10, // High byte of operand
+			0x1000: 0x0F, // Value at absolute address
 		},
 		a:          0x3C,
 		cycles:     4,
@@ -238,8 +238,8 @@ func TestCPU_EOR_ABS_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x5D, // EOR absolute, X
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2005: 0x0F, // Value at absolute address + X
+			0x8002: 0x10, // High byte of operand
+			0x1005: 0x0F, // Value at absolute address + X
 		},
 		a:          0x3C,
 		x:          0x05,
@@ -258,8 +258,8 @@ func TestCPU_EOR_ABS_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x59, // EOR absolute, Y
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2005: 0x0F, // Value at absolute address + Y
+			0x8002: 0x10, // High byte of operand
+			0x1005: 0x0F, // Value at absolute address + Y
 		},
 		a:          0x3C,
 		y:          0x05,
@@ -279,8 +279,8 @@ func TestCPU_EOR_IND_X(t *testing.T) {
 			0x8000: 0x41, // EOR (indirect, X)
 			0x8001: 0x10, // Operand
 			0x0015: 0x00, // Low byte of effective address
-			0x0016: 0x20, // High byte of effective address
-			0x2000: 0x0F, // Value at effective address
+			0x0016: 0x10, // High byte of effective address
+			0x1000: 0x0F, // Value at effective address
 		},
 		a:          0x3C,
 		x:          0x05,
@@ -300,8 +300,8 @@ func TestCPU_EOR_IND_Y(t *testing.T) {
 			0x8000: 0x51, // EOR (indirect), Y
 			0x8001: 0x10, // Operand
 			0x0010: 0x00, // Low byte of effective address
-			0x0011: 0x20, // High byte of effective address
-			0x2005: 0x0F, // Value at effective address + Y
+			0x0011: 0x10, // High byte of effective address
+			0x1005: 0x0F, // Value at effective address + Y
 		},
 		a:          0x3C,
 		y:          0x05,
@@ -374,8 +374,8 @@ func TestCPU_ORA_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x0D, // ORA absolute
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2000: 0x0F, // Value at absolute address
+			0x8002: 0x10, // High byte of operand
+			0x1000: 0x0F, // Value at absolute address
 		},
 		a:          0x30,
 		cycles:     4,
@@ -393,8 +393,8 @@ func TestCPU_ORA_ABS_X(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x1D, // ORA absolute,X
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2005: 0x0F, // Value at absolute address + X
+			0x8002: 0x10, // High byte of operand
+			0x1005: 0x0F, // Value at absolute address + X
 		},
 		a:          0x30,
 		x:          0x05,
@@ -413,8 +413,8 @@ func TestCPU_ORA_ABS_Y(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x19, // ORA absolute, Y
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2005: 0x0F, // Value at absolute address + Y
+			0x8002: 0x10, // High byte of operand
+			0x1005: 0x0F, // Value at absolute address + Y
 		},
 		a:          0x30,
 		y:          0x05,
@@ -434,8 +434,8 @@ func TestCPU_ORA_IND_X(t *testing.T) {
 			0x8000: 0x01, // ORA (indirect, X)
 			0x8001: 0x10, // Operand
 			0x0015: 0x00, // Low byte of effective address
-			0x0016: 0x20, // High byte of effective address
-			0x2000: 0x0F, // Value at effective address
+			0x0016: 0x10, // High byte of effective address
+			0x1000: 0x0F, // Value at effective address
 		},
 		a:          0x30,
 		x:          0x05,
@@ -455,8 +455,8 @@ func TestCPU_ORA_IND_Y(t *testing.T) {
 			0x8000: 0x11, // ORA (indirect), Y
 			0x8001: 0x10, // Operand
 			0x0010: 0x00, // Low byte of effective address
-			0x0011: 0x20, // High byte of effective address
-			0x2005: 0x0F, // Value at effective address + Y
+			0x0011: 0x10, // High byte of effective address
+			0x1005: 0x0F, // Value at effective address + Y
 		},
 		a:          0x30,
 		y:          0x05,
@@ -492,8 +492,8 @@ func TestCPU_BIT_ABS(t *testing.T) {
 		memory: map[uint16]uint8{
 			0x8000: 0x2C, // BIT absolute
 			0x8001: 0x00, // Low byte of operand
-			0x8002: 0x20, // High byte of operand
-			0x2000: 0xC0, // Value at absolute address (sets N and V)
+			0x8002: 0x10, // High byte of operand
+			0x1000: 0xC0, // Value at absolute address (sets N and V)
 		},
 		a:          0x40,
 		cycles:     4,
