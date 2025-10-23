@@ -74,41 +74,77 @@ func TestCPU_LDA_ABS(t *testing.T) {
 }
 
 func TestCPU_LDA_ABS_X(t *testing.T) {
-	vector := &instructionTestVector{
-		name: "LDA Absolute, X",
-		memory: map[uint16]uint8{
-			0x8000: 0xBD, // LDA Absolute, X
-			0x8001: 0x00, // Low byte of address
-			0x8002: 0x10, // High byte of address (0x1000)
-			0x1005: 0x9C, // Value at address 0x1000 + X (0x1005)
+	vectors := []*instructionTestVector{
+		{
+			name: "LDA Absolute, X",
+			memory: map[uint16]uint8{
+				0x8000: 0xBD, // LDA Absolute, X
+				0x8001: 0x00, // Low byte of address
+				0x8002: 0x10, // High byte of address (0x1000)
+				0x1005: 0x9C, // Value at address 0x1000 + X (0x1005)
+			},
+			x:          0x05, // Set X register to 5
+			cycles:     4,
+			psMask:     psFlagZero | psFlagNegative,
+			expectedPS: psFlagNegative, // Expect Negative flag to be set
+			expectedA:  pointer(uint8(0x9C)),
 		},
-		x:          0x05, // Set X register to 5
-		cycles:     4,
-		psMask:     psFlagZero | psFlagNegative,
-		expectedPS: psFlagNegative, // Expect Negative flag to be set
-		expectedA:  pointer(uint8(0x9C)),
+		{
+			name: "LDA Absolute, X (Page Cross)",
+			memory: map[uint16]uint8{
+				0x8000: 0xBD, // LDA Absolute, X
+				0x8001: 0xFF, // Low byte of address
+				0x8002: 0x00, // High byte of address (0x00FF)
+				0x0104: 0x9C, // Value at address 0x00FF + X (0x0104)
+			},
+			x:          0x05, // Set X register to 5
+			cycles:     5,
+			psMask:     psFlagZero | psFlagNegative,
+			expectedPS: psFlagNegative, // Expect Negative flag to be set
+			expectedA:  pointer(uint8(0x9C)),
+		},
 	}
 
-	vector.test(t)
+	for _, vector := range vectors {
+		vector.test(t)
+	}
 }
 
 func TestCPU_LDA_ABS_Y(t *testing.T) {
-	vector := &instructionTestVector{
-		name: "LDA Absolute, Y",
-		memory: map[uint16]uint8{
-			0x8000: 0xB9, // LDA Absolute, Y
-			0x8001: 0x00, // Low byte of address
-			0x8002: 0x10, // High byte of address (0x1000)
-			0x1003: 0xFF, // Value at address 0x1000 + Y (0x1003)
+	vectors := []*instructionTestVector{
+		{
+			name: "LDA Absolute, Y",
+			memory: map[uint16]uint8{
+				0x8000: 0xB9, // LDA Absolute, Y
+				0x8001: 0x00, // Low byte of address
+				0x8002: 0x10, // High byte of address (0x1000)
+				0x1003: 0xFF, // Value at address 0x1000 + Y (0x1003)
+			},
+			y:          0x03, // Set Y register to 3
+			cycles:     4,
+			psMask:     psFlagZero | psFlagNegative,
+			expectedPS: psFlagNegative, // Expect Negative flag to be set
+			expectedA:  pointer(uint8(0xFF)),
 		},
-		y:          0x03, // Set Y register to 3
-		cycles:     4,
-		psMask:     psFlagZero | psFlagNegative,
-		expectedPS: psFlagNegative, // Expect Negative flag to be set
-		expectedA:  pointer(uint8(0xFF)),
+		{
+			name: "LDA Absolute, Y (Page Cross)",
+			memory: map[uint16]uint8{
+				0x8000: 0xB9, // LDA Absolute, Y
+				0x8001: 0xFF, // Low byte of address
+				0x8002: 0x00, // High byte of address (0x00FF)
+				0x0104: 0x9C, // Value at address 0x00FF + Y (0x0104)
+			},
+			y:          0x05, // Set Y register to 5
+			cycles:     5,
+			psMask:     psFlagZero | psFlagNegative,
+			expectedPS: psFlagNegative, // Expect Negative flag to be set
+			expectedA:  pointer(uint8(0x9C)),
+		},
 	}
 
-	vector.test(t)
+	for _, vector := range vectors {
+		vector.test(t)
+	}
 }
 
 func TestCPU_LDA_IND_X(t *testing.T) {
@@ -132,23 +168,42 @@ func TestCPU_LDA_IND_X(t *testing.T) {
 }
 
 func TestCPU_LDA_IND_Y(t *testing.T) {
-	vector := &instructionTestVector{
-		name: "LDA (Indirect), Y",
-		memory: map[uint16]uint8{
-			0x8000: 0xB1, // LDA (Indirect), Y
-			0x8001: 0x10, // Operand: Zero Page address 0x10
-			0x0010: 0x00, // Low byte of base address (0x1000)
-			0x0011: 0x10, // High byte of base address
-			0x1002: 0xAB, // Value at effective address 0x1000 + Y (0x1002)
+	vectors := []*instructionTestVector{
+		{
+			name: "LDA (Indirect), Y",
+			memory: map[uint16]uint8{
+				0x8000: 0xB1, // LDA (Indirect), Y
+				0x8001: 0x10, // Operand: Zero Page address 0x10
+				0x0010: 0x00, // Low byte of base address (0x1000)
+				0x0011: 0x10, // High byte of base address
+				0x1002: 0xAB, // Value at effective address 0x1000 + Y (0x1002)
+			},
+			y:          0x02, // Set Y register to 2
+			cycles:     5,
+			psMask:     psFlagZero | psFlagNegative,
+			expectedPS: psFlagNegative, // Expect Negative flag to be set
+			expectedA:  pointer(uint8(0xAB)),
 		},
-		y:          0x02, // Set Y register to 2
-		cycles:     5,
-		psMask:     psFlagZero | psFlagNegative,
-		expectedPS: psFlagNegative, // Expect Negative flag to be set
-		expectedA:  pointer(uint8(0xAB)),
+		{
+			name: "LDA (Indirect), Y (Page Cross)",
+			memory: map[uint16]uint8{
+				0x8000: 0xB1, // LDA (Indirect), Y
+				0x8001: 0x10, // Operand: Zero Page address 0x10
+				0x0010: 0xFF, // Low byte of base address (0x00FF)
+				0x0011: 0x00, // High byte of base address
+				0x0104: 0xCD, // Value at effective address 0x00FF + Y (0x0104)
+			},
+			y:          0x05, // Set Y register to 5
+			cycles:     6,
+			psMask:     psFlagZero | psFlagNegative,
+			expectedPS: psFlagNegative, // Expect Negative flag to be set
+			expectedA:  pointer(uint8(0xCD)),
+		},
 	}
 
-	vector.test(t)
+	for _, vector := range vectors {
+		vector.test(t)
+	}
 }
 
 func TestCPU_LDX_IMM(t *testing.T) {

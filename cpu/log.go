@@ -14,9 +14,9 @@ func (cpu *CPU) trace(pc uint16, opcode uint8, ins cpuInstruction, operands ...u
 
 	asm := cpu.disassemble(pc, ins, operands...)
 
-	ppuTicks := cpu.Cycles * 3
-	ppux := ppuTicks % 341
-	ppuy := (ppuTicks / 341) % 262
+	ppuCycles := cpu.Cycles * 3
+	ppux := ppuCycles % 341
+	ppuy := (ppuCycles / 341) % 262
 
 	fmt := "%04X  %-9s %-31s A:%02X X:%02X Y:%02X P:%02X SP:%02X PPU:%3d,%3d CYC:%d"
 	if strings.HasPrefix(asm, "*") {

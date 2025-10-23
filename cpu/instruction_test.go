@@ -58,14 +58,14 @@ func (vector *instructionTestVector) test(t *testing.T) *CPU {
 		Mapper: new(testMapper),
 	}, nil))
 
+	// Set the reset vector to point to 0x8000
+	cpu.Mem.Write(0xFFFC, 0x00)
+	cpu.Mem.Write(0xFFFD, 0x80)
+
 	// Load initial memory state
 	for addr, value := range vector.memory {
 		cpu.Mem.Write(addr, value)
 	}
-
-	// Set the reset vector to point to 0x8000
-	cpu.Mem.Write(0xFFFC, 0x00)
-	cpu.Mem.Write(0xFFFD, 0x80)
 
 	// Reset the CPU to initialize PC and other registers
 	cpu.Reset()
