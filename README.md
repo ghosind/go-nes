@@ -76,7 +76,7 @@ go test ./cpu -v
 - [ ] Memory mapping and RAM emulation
 - [X] iNES ROM loading and parsing
 - [ ] IRQ and NMI handling
-- [ ] Complete NROM mapper support (mapper 0)
+- [X] Complete NROM mapper support (mapper 0)
 - [ ] PPU implementation for full graphics rendering
 - [ ] APU implementation for audio output
 - [ ] Support for additional mappers (MMC1, MMC3, etc.)
@@ -86,8 +86,10 @@ go test ./cpu -v
 ## Reference
 
 - [NES Documentation](https://www.nesdev.org/NESDoc.pdf)
+- [CPU Reference](https://www.nesdev.org/wiki/CPU_ALL)
 - [Obelisk 6502 Guide](https://www.nesdev.org/obelisk-6502-guide/index.html)
 - [Unofficial 6502 Opcodes](https://www.nesdev.org/wiki/CPU_unofficial_opcodes)
+- [PPU Programmer Reference](https://www.nesdev.org/wiki/PPU_programmer_reference)
 - [iNES File Format](https://www.nesdev.org/wiki/INES)
 - [INES 1.0 Mapper Grid](https://www.nesdev.org/wiki/Mapper)
 

@@ -85,7 +85,7 @@ go test ./cpu -v
 - [ ] 内存映射与 RAM 的补全
 - [X] 支持 iNES ROM 的加载与解析
 - [ ] IRQ 与 NMI 中断处理
-- [ ] 完整实现 NROM（Mapper 0）的所有细节
+- [X] 完整实现 NROM（Mapper 0）
 - [ ] 完整实现 PPU 以支持全部渲染特性
 - [ ] 完整实现 APU 以输出音频
 - [ ] 支持更多映射器（如 MMC1、MMC3 等）
@@ -95,8 +95,10 @@ go test ./cpu -v
 ## 参考资料
 
 - [NES Documentation](https://www.nesdev.org/NESDoc.pdf)
+- [CPU Reference](https://www.nesdev.org/wiki/CPU_ALL)
 - [Obelisk 6502 Guide](https://www.nesdev.org/obelisk-6502-guide/index.html)
 - [Unofficial 6502 Opcodes](https://www.nesdev.org/wiki/CPU_unofficial_opcodes)
+- [PPU Programmer Reference](https://www.nesdev.org/wiki/PPU_programmer_reference)
 - [iNES File Format](https://www.nesdev.org/wiki/INES)
 - [INES 1.0 Mapper Grid](https://www.nesdev.org/wiki/Mapper)
 
