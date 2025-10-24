@@ -9,12 +9,12 @@ type Mapper interface {
 	PPUWrite(addr uint16, value uint8)
 }
 
-var validMappers = map[int]func(header *ines.INESHeader, data []byte) Mapper{
+var supportedMappers = map[int]func(header *ines.INESHeader, data []byte) Mapper{
 	0: NewMapper0,
 }
 
 func NewMapper(header *ines.INESHeader, data []byte) Mapper {
-	if constructor, ok := validMappers[header.MapperID]; ok {
+	if constructor, ok := supportedMappers[header.MapperID]; ok {
 		return constructor(header, data)
 	}
 	return nil
