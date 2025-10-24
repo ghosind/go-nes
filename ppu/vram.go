@@ -5,7 +5,9 @@ import (
 )
 
 type VRAM struct {
-	rom *rom.ROM
+	rom        *rom.ROM
+	nameTables [4][0x400]uint8
+	palettes   [32]uint8
 }
 
 func NewVRAM(rom *rom.ROM) *VRAM {
@@ -19,11 +21,19 @@ func (vram *VRAM) Read(addr uint16) uint8 {
 	addr = addr & 0x3FFF
 
 	switch {
-	// TODO: Implement NameTable and Palette RAM reads
 	case addr < 0x2000:
+		// Pattern Table ROM
 		return vram.rom.PPURead(addr)
+	case addr >= 0x2000 && addr < 0x3F00:
+		addr = (addr - 0x2000) % 0x1000
+		// Name Table RAM
+		index := addr / 0x400
+		offset := addr % 0x400
+		return vram.nameTables[index][offset]
+	default:
+		// Palette RAM
+		return vram.palettes[(addr-0x3F00)%32]
 	}
-	return 0
 }
 
 func (vram *VRAM) Write(addr uint16, value uint8) {
@@ -31,8 +41,17 @@ func (vram *VRAM) Write(addr uint16, value uint8) {
 	addr = addr & 0x3FFF
 
 	switch {
-	// TODO: Implement NameTable and Palette RAM writes
 	case addr < 0x2000:
+		// Pattern Table ROM
 		vram.rom.PPUWrite(addr, value)
+	case addr >= 0x2000 && addr < 0x3F00:
+		// Name Table RAM
+		addr = (addr - 0x2000) % 0x1000
+		index := addr / 0x400
+		offset := addr % 0x400
+		vram.nameTables[index][offset] = value
+	default:
+		// Palette RAM
+		vram.palettes[(addr-0x3F00)%32] = value
 	}
 }
